@@ -1,12 +1,17 @@
 import * as React from 'react';
-import { ContentBox } from '../contentBox/ContentBox';
-import { PageHeader } from '../pageHeader/PageHeader';
-import { Button } from '../button/Button';
+import styles from './UploadRoute.scss';
 
-import styles from './FileUploader.scss';
-import { Loader } from '../loader/Loader';
 
-export const FileUploader: React.FunctionComponent = () => {
+import {
+  Loader,
+  Button,
+  ContentBox,
+  PageHeader
+} from '../../components';
+
+export const UploadRoute: React.FunctionComponent = () => {
+
+
 	const [file, setFile] = React.useState(null);
 	const [fileType, setFileType] = React.useState(null);
 	const [filesArray, setFilesArray] = React.useState(null);
@@ -35,7 +40,6 @@ export const FileUploader: React.FunctionComponent = () => {
 				setFilesArray(Object.values(json.files));
 				setIsLoading(false);
 			}
-			console.log(json)
 		})
 		.catch(err => {
 			setIsLoading(false);
@@ -55,7 +59,7 @@ export const FileUploader: React.FunctionComponent = () => {
 
 	return (
 		<ContentBox>
-			<PageHeader header="FileUploader">
+			<PageHeader header="Document Uploader">
 			</PageHeader>
 			<form onSubmit={e => handleSubmit(e)} className={styles.form}>
 				<select name="fileType" id="fileType" className={styles.select} onChange={e => handleSelect(e)}>
@@ -83,5 +87,4 @@ export const FileUploader: React.FunctionComponent = () => {
 		</ContentBox>
 	);
 
-
-}
+};

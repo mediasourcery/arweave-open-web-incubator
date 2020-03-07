@@ -9,12 +9,12 @@ import { MenuContext, PageContext } from '../../contexts';
 import styles from './Menu.scss';
 
 const mainNavLinks: {
-  page: 'groups' | 'groups/new' | 'services' | 'services/edit' | 'services/new' | 'users' | 'users/edit' | 'users/new';
+  page: 'upload';
   displayName: string;
 }[] = [
   {
-    page: 'services',
-    displayName: 'Services'
+    page: 'upload',
+    displayName: 'File Upload'
   }
 ];
 
@@ -56,9 +56,6 @@ export const Menu: React.FunctionComponent = () => {
               />
             ))}
           </li>
-					<li className={styles.listItem}>
-							<MenuLink page='file-uploader' displayName='FIle Uploader' currentPage={page} onClick={() => setShowMenu(false)} />
-					</li>
         </ul>
         <h3 className={styles.heading}>Permissions</h3>
         <ul className={styles.list}>

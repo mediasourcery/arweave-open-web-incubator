@@ -10,15 +10,10 @@ import {
   PopoverContextProvider,
   BreadcrumbsContextProvider
 } from './contexts';
+
 import {
-  GroupsRoute,
-  GroupsFormRoute,
-  HomeRoute,
-  LogoutRoute,
-  ServicesRoute,
-  ServicesFormRoute,
-  UsersRoute,
-  UsersFormRoute
+	HomeRoute,
+	UploadRoute
 } from './routes';
 import { decodeToken } from './utils';
 
@@ -56,19 +51,7 @@ const App: React.FunctionComponent = () => {
           <Breadcrumbs />
           <Router basepath={process.env.PUBLIC_URL}>
             <Route path="/" component={HomeRoute} />
-            <Route path="/groups" component={GroupsRoute} />
-            <Route path="/groups/new" component={GroupsFormRoute} />
-            <Route path="/groups/:groupGid/edit" component={GroupsFormRoute} />
-            <Route path="/logout" component={LogoutRoute} />
-            <Route path="/services" component={ServicesRoute} />
-            <Route path="/services/new" component={ServicesFormRoute} />
-            <Route
-              path="/services/:serviceName/edit"
-              component={ServicesFormRoute}
-            />
-            <Route path="/users" component={UsersRoute} />
-            <Route path="/users/new" component={UsersFormRoute} />
-            <Route path="/users/:userUid/edit" component={UsersFormRoute} />
+            <Route path="/upload" component={UploadRoute} />
           </Router>
         </div>
       </div>
