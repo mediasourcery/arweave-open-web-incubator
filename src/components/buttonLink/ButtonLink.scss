@@ -1,0 +1,11 @@
+@import '../../styles/Branding.scss';
+
+.button {
+  padding: 15px;
+}
+
+.link {
+  &:hover {
+    text-decoration: none;
+  }
+}

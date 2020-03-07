@@ -1,0 +1,31 @@
+@import '../../styles/Branding.scss';
+
+.button {
+  background: none;
+  background-color: $color-primary;
+  border: none;
+  border-radius: 30px;
+  color: $white;
+  cursor: pointer;
+  display: block;
+  font-size: 16px;
+  margin: 0;
+  min-width: 150px;
+  padding: 25px;
+  width: 100%;
+
+  &:hover {
+    background-color: $color-primary-hover;
+  }
+
+  &:active {
+    background-color: #1181d1;
+  }
+  
+  &[disabled] {
+    background-color: $dark-gray;
+    color: $gray;
+    cursor: no-drop;
+    pointer-events: none;
+  }
+}

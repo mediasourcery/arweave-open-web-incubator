@@ -1,0 +1,23 @@
+@import '../../styles/Branding.scss';
+
+.link {
+  color: #FFF;
+  display: block;
+  padding: 15px;
+  transition: background-color .25s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, .25);
+    text-decoration: none;
+  }
+
+  &.active {
+    background-color: $color-primary;
+    color: $white;
+  }
+}
+
+.text {
+  margin: 0 0 0 10px;
+  vertical-align: middle;
+}

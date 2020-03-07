@@ -1,0 +1,43 @@
+@import './styles/Branding.scss';
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: $color-primary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+body {
+  font-family: $font-primary;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+}
+
+.content {
+  background-color: $light-gray;
+  flex-grow: 1;
+  height: calc(100vh - 63px);
+  overflow-y: auto;
+}
+
+.menuList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 250px;
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+}

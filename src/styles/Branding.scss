@@ -1,0 +1,40 @@
+@import 'https://fonts.googleapis.com/css?family=Poppins&display=swap';
+
+$font-primary: Poppins, sans-serif;
+
+$color-primary: #1098f7;
+$color-primary-hover: #51b1f5;
+$color-secondary: #2e294e;
+$color-success: #52aa5e;
+$color-danger: #e13700;
+$color-warning: #ffd166;
+$color-info: #5fb0b7;
+$color-light: #ccc;
+$color-dark: #333;
+$color-muted: #999;
+$color-white: #fff;
+$color-black: #111;
+
+$dark-gray: #666;
+$gray: #999;
+$light-gray: #ccc;
+
+$black: #000;
+$white: #fff;
+
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}

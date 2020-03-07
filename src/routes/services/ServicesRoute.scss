@@ -1,0 +1,64 @@
+@import '../../styles/Branding.scss';
+
+.table {
+  table-layout: fixed;
+  width: 100%;
+
+  td > div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  th {
+    text-align: left;
+  }
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin: 15px 0 0 0;
+}
+
+.actionBtn {
+  margin: 0 0 0 10px;
+  &:focus {
+    outline: none;
+  }
+}
+
+.service {
+  align-items: center;
+  border-top: 1px #EEE solid;
+  display: flex;
+  padding: 0 15px;
+  &:hover {
+    background: #eeeeee;
+  }
+}
+
+.serviceActions {
+  text-align: right;
+}
+
+.serviceEnabled {
+  margin: 24px 0 0 24px;
+  position: absolute;
+  z-index: 9999;
+}
+
+.serviceInfo {
+  flex-grow: 1;
+  padding: 15px 0;
+  cursor: pointer;
+}
+
+.serviceName {
+  font-size: 18px;
+}
+
+.serviceType {
+  padding-right: 20px;
+  position: relative;
+}

@@ -1,0 +1,28 @@
+@import '../../styles/Branding.scss';
+
+.popover {
+  background-color: $gray;
+  min-width: 200px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  right: -1px;
+  top: 62px;
+  z-index: 99999;
+}
+
+.popoverItem {
+  margin: 0px;
+
+  a {
+    color: $white;
+    display: block;
+    padding: 15px;
+
+    &:hover {
+      background-color: $dark-gray;
+      text-decoration: none;
+    }
+  }
+}

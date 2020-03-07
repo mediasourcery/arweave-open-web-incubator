@@ -1,0 +1,59 @@
+@import '../../styles/Branding.scss';
+
+.table {
+  table-layout: fixed;
+  width: 100%;
+
+  td > div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  th {
+    text-align: left;
+  }
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+}
+
+.field {
+  border-top: 1px #EEE solid;
+  padding: 15px;
+}
+
+.label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.input {
+  width: 100%;
+  display: inline-block;
+  height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
+  margin-bottom: 10px;
+
+  &[disabled] {
+    background-color: $light-gray;
+    cursor: not-allowed;
+  }
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin: 0 15px 0 0;
+  white-space: nowrap;
+}
+
+.submitBtn {
+  padding: 15px;
+}

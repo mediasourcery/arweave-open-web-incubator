@@ -1,0 +1,12 @@
+@import '../../styles/Branding.scss';
+
+.base {
+  margin: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.heading {
+  margin: 0;
+}

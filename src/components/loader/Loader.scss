@@ -1,0 +1,18 @@
+@import '../../styles/Branding.scss';
+
+.loader {
+  color: $dark-gray;
+  padding: 200px;
+  text-align: center;
+}
+
+.loaderImageContainer {
+  -webkit-animation: spin 4s linear infinite;
+  -moz-animation: spin 4s linear infinite;
+  animation: spin 4s linear infinite;
+}
+
+.text {
+  font-size: 16px;
+  margin: 3px;
+}

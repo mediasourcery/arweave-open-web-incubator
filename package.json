@@ -1,0 +1,37 @@
+{
+  "name": "msi-auth-ui-console",
+  "version": "2.5.0",
+  "private": true,
+  "dependencies": {
+    "@reach/router": "^1.2.1",
+    "@types/node": "^12.12.25",
+    "axios": "^0.19.2",
+    "classnames": "^2.2.6",
+    "jsonwebtoken": "^8.5.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-router-dom": "^5.1.2"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/jsonwebtoken": "^8.3.7",
+    "@types/reach__router": "^1.2.6",
+    "@types/react": "^16.9.19",
+    "@types/react-dom": "^16.9.5",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-static-files-copy": "^2.3.1",
+    "parcel-plugin-typed-css-modules": "^1.1.0",
+    "postcss-modules": "^1.5.0",
+    "prettier": "^1.19.1",
+    "sass": "^1.25.0",
+    "typescript": "^3.7.5",
+    "yargs": "^14.2.2"
+  },
+  "scripts": {
+    "build": "node parcel/build",
+    "build-dev": "rm -rf dist && npm run build && npm start -- --port 4000",
+    "format": "prettier \"src/**/*.{js,tsx,html}\" --write",
+    "start": "node parcel/start",
+    "watch": "node parcel/watch"
+  }
+}

@@ -1,0 +1,31 @@
+@import '../../styles/Branding.scss';
+
+.container {
+  border-radius: 3px;
+}
+
+.input {
+  display: inline-block;
+  font-size: 14px;
+  width: 100%;
+  padding: 6px 12px;
+  margin-bottom: 15px;
+  background: none;
+  background-color: $white;
+  background-repeat: no-repeat;
+  background-position: right 3px center;
+  background-size: 16px auto;
+  border: 1px $light-gray solid;
+  border-radius: 4px;
+
+  &[disabled] {
+    background-color: $light-gray;
+    cursor: not-allowed;
+  }
+}
+
+.label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
