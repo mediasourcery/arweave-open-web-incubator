@@ -18,20 +18,6 @@ const mainNavLinks: {
   }
 ];
 
-const userNavLinks: {
-  page: 'groups' | 'groups/new' | 'services' | 'services/edit' | 'services/new' | 'users' | 'users/edit' | 'users/new';
-  displayName: string;
-}[] = [
-  {
-    page: 'groups',
-    displayName: 'Groups'
-  },
-  {
-    page: 'users',
-    displayName: 'Users'
-  }
-];
-
 export const Menu: React.FunctionComponent = () => {
   const { showMenu, setShowMenu } = useContext(MenuContext);
   const { page } = useContext(PageContext);
@@ -47,20 +33,6 @@ export const Menu: React.FunctionComponent = () => {
         <ul className={styles.list}>
           <li className={styles.listItem}>
             {mainNavLinks.map(info => (
-              <MenuLink
-                key={info.page}
-                page={info.page}
-                displayName={info.displayName}
-                currentPage={page}
-                onClick={() => setShowMenu(false)}
-              />
-            ))}
-          </li>
-        </ul>
-        <h3 className={styles.heading}>Permissions</h3>
-        <ul className={styles.list}>
-          <li className={styles.listItem}>
-            {userNavLinks.map(info => (
               <MenuLink
                 key={info.page}
                 page={info.page}

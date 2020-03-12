@@ -8,7 +8,7 @@ import { Icon } from '../';
 import styles from './MenuLink.scss';
 
 interface IProps {
-  page: 'groups' | 'groups/new' | 'services' | 'services/edit' | 'services/new' | 'users' | 'users/edit' | 'users/new' | 'file-uploader';
+  page: 'upload';
   displayName: string;
   currentPage: string;
   onClick: MouseEventHandler;

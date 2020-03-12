@@ -28,10 +28,12 @@
     "yargs": "^14.2.2"
   },
   "scripts": {
-    "build": "node parcel/build",
-    "build-dev": "rm -rf dist && npm run build && npm start -- --port 4000",
+    "build": "NODE_ENV=local node parcel/build",
+    "build:dev": "NODE_ENV=development node parcel/build",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
     "format": "prettier \"src/**/*.{js,tsx,html}\" --write",
     "start": "node parcel/start",
+    "start:dev": "NODE_ENV=development node parcel/start --port 4000",
     "watch": "node parcel/watch"
   }
 }
