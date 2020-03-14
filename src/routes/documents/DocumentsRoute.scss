@@ -1,5 +1,12 @@
 @import '../../styles/Branding.scss';
 
+.actionBtn {
+	margin: 0 0 0 10px;
+	&:focus {
+	  outline: none;
+	}
+  }
+
 .form {
 	padding: 15px;
 }
@@ -12,11 +19,52 @@
 
 .document {
 	padding: 20px 15px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .document:nth-child(even) {
     background: #f1f1f1;
 }
+
+.modalButtonBlue, .modalButtonRed {
+	width: 100px;
+	height: 40px;
+	padding: 0;
+  }
+  
+  .modalButtonBlue { 
+	background-color: $color-primary;
+	margin-right: 10px;
+  
+	&:hover {
+	  background-color: $color-primary-hover;
+	}
+  }
+  
+  .modalButtonRed { 
+	background-color: red;
+	margin-left: 10px;
+  
+	&:hover {
+	  background-color: orangered;
+	}
+  }
+  
+  .modalButtonContainer {
+	display: flex;
+	justify-content: center;
+  }
+  
+  .modalMessage { 
+	text-align: center;
+	margin-bottom: 15px;
+  }
+  
+  .modalMessage span { 
+	color: $color-primary
+  }
 
 .select {
 	background: transparent;

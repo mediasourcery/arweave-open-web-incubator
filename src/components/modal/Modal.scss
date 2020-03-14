@@ -1,0 +1,109 @@
+.cModalCover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99; 
+  transform: translateZ(0);
+  background-color: rgba(#000, 0.5);
+}
+
+.cModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  z-index: 9999;
+  transform-origin: center;
+
+  @media screen and (min-width: 500px) {
+    left: 50%;
+    top: 50%;
+    height: auto;
+    transform: translate(-50%, -50%);
+    max-width: 30em;
+    max-height: calc(100% - 1em);
+  }
+}
+
+.cModalContent {
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  padding: 1.5em 1.5em 1.5em 1.5em;
+  box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cModalClose {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: .5em;
+  line-height: 1;
+  border: 0;
+  box-shadow: 0;
+  outline: none
+}
+
+.cModalCloseIcon {
+  width: 25px;
+  height: 25px;
+  fill: transparent;
+  stroke: black;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.cModalBody {
+  padding-top: .25em;
+}
+
+.uHideVisually {
+  border: 0 !important;
+  clip: rect(0 0 0 0) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  white-space: nowrap !important;
+}
+
+@mixin cModalAnim() {
+  .cModalContent {
+    transform: scale(0.9);
+  }
+}
+
+
+.modalEnter {
+  @include cModalAnim();
+}
+
+.modalEnterActive {
+  opacity: 1;
+  transition: all 300ms;
+
+  .cModalContent {
+    transition: all 300ms;
+    transform: translateZ(0);
+  }
+}
+
+.modalEnterDone {
+  opacity: 1;
+}
+
+.modalExit {
+  opacity: 1;
+}
+
+.modalExitActive {
+  opacity: 0;
+  @include cModalAnim();
+}

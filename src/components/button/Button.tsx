@@ -9,6 +9,7 @@ interface IProps {
   onClick?: () => void;
   type?: 'button' | 'submit';
   styleOverride?: string;
+  className?: string;
 }
 
 export const Button: React.FC<IProps> = ({
@@ -17,9 +18,10 @@ export const Button: React.FC<IProps> = ({
   onClick = () => {},
   type = 'button',
   styleOverride,
+  className
 }) => (
   <button
-    className={classNames(styles.button, styleOverride)}
+    className={classNames(className, styles.button, styleOverride)}
     disabled={disabled}
     onClick={onClick}
     type={type}
