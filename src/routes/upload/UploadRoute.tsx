@@ -56,11 +56,34 @@ export const UploadRoute: FC = () => {
 
   useEffect(() => {
     setPage('upload');
-  }, []);
+	}, []);
+
+	useEffect(() => {
+		async function fetchFilesList() {
+			const response = await fetch('https://melapelan.in/upload.php');
+			const data = await response.json();
+			setFilesArray(Object.values(data.files));
+		}
+
+		fetchFilesList();
+	}, []);
+
+	function renderFilesList() {
+		if (filesArray) {
+			return filesArray.map(f => <li key={f}><a href="http://melapelan.in/uploads/">{f}</a></li>);
+		}
+	}
 
   return (
     <ContentBox>
       <PageHeader header="Document Uploader"></PageHeader>
+
+			<div className="files-list-conta">
+				<ol className="files-list">
+					{renderFilesList()}
+				</ol>
+			</div>
+
       <form onSubmit={e => handleSubmit(e)} className={styles.form}>
         <select
           name="fileType"
