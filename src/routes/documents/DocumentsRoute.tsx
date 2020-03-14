@@ -57,7 +57,7 @@ export const DocumentsRoute: FC = () => {
             <div>
               <h3>Files on server:</h3>
               {filesArray.length < 1 ? <p>No files located on server.</p> : filesArray.map(file => (
-                <p key={file}>{file}</p>
+                <p className={styles.document} key={file}>{file}</p>
               ))}
             </div>
           </div>

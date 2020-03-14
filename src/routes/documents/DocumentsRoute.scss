@@ -10,6 +10,14 @@
 	width: 200px;
 }
 
+.document {
+	padding: 20px 15px;
+}
+
+.document:nth-child(even) {
+    background: #f1f1f1;
+}
+
 .select {
 	background: transparent;
 	border: 1px solid #ddd;

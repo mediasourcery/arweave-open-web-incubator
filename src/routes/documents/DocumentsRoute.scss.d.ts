@@ -1,5 +1,6 @@
 export const form: string;
 export const button: string;
+export const document: string;
 export const select: string;
 export const fileInput: string;
 export const response: string;
