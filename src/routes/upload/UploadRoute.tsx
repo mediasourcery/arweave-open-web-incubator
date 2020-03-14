@@ -11,13 +11,14 @@ export const UploadRoute: FC = () => {
 
   const [file, setFile] = useState(null);
   const [fileType, setFileType] = useState(null);
-  const [filesArray, setFilesArray] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [response, setResponse] = useState('mmm');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   function handleSubmit(e: FormEvent): void {
     e.preventDefault();
     setIsLoading(true);
+    setSuccessMessage('');
 
     const formData = new FormData();
     formData.append('uploadfile', file, file.name);
@@ -30,17 +31,13 @@ export const UploadRoute: FC = () => {
       headers,
       body: formData
     })
-      .then(res => res.json())
-      .then(json => {
-        if (json) {
-          setResponse(json.moved);
-          setFilesArray(Object.values(json.files));
-          setIsLoading(false);
-        }
+      .then(() => {
+        setSuccessMessage('Document uploaded successfully!')
+        setIsLoading(false);
       })
       .catch(err => {
         setIsLoading(false);
-        setResponse(err);
+        setErrorMessage(err);
         console.log(err);
       });
   }
@@ -91,19 +88,19 @@ export const UploadRoute: FC = () => {
 
       {isLoading ? (
         <Loader />
-      ) : (
-        filesArray && (
-          <div className={styles.response}>
-            {response}
-            <div>
-              <h3>Files on server:</h3>
-              {filesArray.map(file => (
-                <p key={file}>{file}</p>
-              ))}
-            </div>
-          </div>
-        )
-      )}
+      ) : null}
+
+      {successMessage ? (
+        <div className={styles.messageSuccess}>
+          {successMessage}
+        </div>
+      ) : null}
+
+      {errorMessage ? (
+        <div className={styles.messageError}>
+          {errorMessage}
+        </div>
+      ) : null}
     </ContentBox>
   );
 };
