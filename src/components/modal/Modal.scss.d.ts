@@ -8,5 +8,6 @@ export const uHideVisually: string;
 export const modalEnter: string;
 export const modalEnterActive: string;
 export const modalEnterDone: string;
+export const modalError: string;
 export const modalExit: string;
 export const modalExitActive: string;

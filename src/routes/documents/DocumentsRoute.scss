@@ -28,43 +28,57 @@
     background: #f1f1f1;
 }
 
+.errorMessage {
+	color: red;
+	padding: 15px;
+	font-size: 1rem;
+}
+
+.loader {
+	padding: 15px;
+}
+
 .modalButtonBlue, .modalButtonRed {
 	width: 100px;
 	height: 40px;
 	padding: 0;
-  }
+
+	&:focus {
+		outline: 0
+	}
+}
   
-  .modalButtonBlue { 
+.modalButtonBlue { 
 	background-color: $color-primary;
 	margin-right: 10px;
   
 	&:hover {
 	  background-color: $color-primary-hover;
 	}
-  }
+}
   
-  .modalButtonRed { 
+.modalButtonRed { 
 	background-color: red;
 	margin-left: 10px;
   
 	&:hover {
 	  background-color: orangered;
 	}
-  }
+}
   
-  .modalButtonContainer {
+.modalButtonContainer {
 	display: flex;
 	justify-content: center;
-  }
+}
   
-  .modalMessage { 
+.modalMessage { 
 	text-align: center;
 	margin-bottom: 15px;
-  }
+}
   
-  .modalMessage span { 
+.modalMessage span { 
 	color: $color-primary
-  }
+}
 
 .select {
 	background: transparent;

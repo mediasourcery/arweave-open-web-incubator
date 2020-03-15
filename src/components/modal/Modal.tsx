@@ -16,6 +16,7 @@ interface IProps {
 }
 
 const ModalContent = ({ onClose, children, onKeyDown, modalRef, buttonRef, onClickAway }) => {
+  const { modalError } = useContext(ModalContext);
 
   return ReactDOM.createPortal(
     <aside aria-modal="true" role="dialog" tabIndex={-1} className={styles.cModalCover}
@@ -29,6 +30,7 @@ const ModalContent = ({ onClose, children, onKeyDown, modalRef, buttonRef, onCli
           </button>
           <div className={styles.cModalBody}>
             {children}
+            {modalError && <p className={styles.modalError}>{modalError}</p>}
           </div>
         </div>
       </div>

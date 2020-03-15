@@ -87,7 +87,7 @@ export const UploadRoute: FC = () => {
       </form>
 
       {isLoading ? (
-        <Loader />
+        <Loader className={styles.loader} />
       ) : null}
 
       {successMessage ? (
