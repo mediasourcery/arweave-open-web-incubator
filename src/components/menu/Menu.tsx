@@ -14,7 +14,7 @@ const mainNavLinks: {
 }[] = [
   {
     page: 'documents',
-    displayName: 'Documnents'
+    displayName: 'Documents'
   },
   {
     page: 'upload',
