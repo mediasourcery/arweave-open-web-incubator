@@ -9,6 +9,8 @@ export * from './icon-button/IconButton';
 export * from './loader/Loader';
 export * from './menu/Menu';
 export * from './menuLink/MenuLink';
+export * from './modal/Modal';
+export * from './modalLink/ModalLink';
 export * from './pageHeader/PageHeader';
 export * from './popover/Popover';
 export * from './text-field/TextField';

@@ -3,9 +3,10 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { Router, RouteComponentProps } from '@reach/router';
 
-import { Header, Menu, Popover, Breadcrumbs } from './components';
+import { Header, Menu, Modal, Popover, Breadcrumbs } from './components';
 import {
   MenuContextProvider,
+  ModalContextProvider,
   PageContextProvider,
   PopoverContextProvider,
   BreadcrumbsContextProvider
@@ -13,8 +14,8 @@ import {
 
 import {
   DocumentsRoute,
-	HomeRoute,
-	UploadRoute
+  HomeRoute,
+  UploadRoute
 } from './routes';
 import { decodeToken } from './utils';
 
@@ -58,17 +59,20 @@ const App: React.FunctionComponent = () => {
         </div>
       </div>
       <Popover />
+      <Modal />
     </>
   );
 };
 
 export const AppProviders: React.SFC = ({ children }) => (
   <MenuContextProvider>
-    <PageContextProvider>
-      <BreadcrumbsContextProvider>
-        <PopoverContextProvider>{children}</PopoverContextProvider>
-      </BreadcrumbsContextProvider>
-    </PageContextProvider>
+    <ModalContextProvider>
+      <PageContextProvider>
+        <BreadcrumbsContextProvider>
+          <PopoverContextProvider>{children}</PopoverContextProvider>
+        </BreadcrumbsContextProvider>
+      </PageContextProvider>
+    </ModalContextProvider>
   </MenuContextProvider>
 );
 

@@ -1,12 +1,17 @@
 import * as React from 'react';
+import classNames from 'classnames';
 
 import { Icon } from '..';
 
 import styles from './Loader.scss';
 
-export const Loader: React.FC = () => (
+interface IProps {
+  className?: string;
+}
+
+export const Loader: React.FC<IProps> = ({ className }) => (
   <div
-    className={styles.loader}
+    className={classNames(className, styles.loader)}
   >
     <div className={styles.loaderImageContainer}>
       <Icon

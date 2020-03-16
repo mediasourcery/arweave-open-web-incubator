@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
 
-import { Loader, Button, ContentBox, PageHeader } from '../../components';
-import { PageContext } from '../../contexts';
+import { ModalLink, IconButton, Loader, Button, ContentBox, PageHeader } from '../../components';
+import { ModalContext, PageContext } from '../../contexts';
 
 import styles from './DocumentsRoute.scss';
 
 export const DocumentsRoute: FC = () => {
   const { setPage } = useContext(PageContext);
+  const { setShowModal, setModalError } = useContext(ModalContext);
 
   const [filesArray, setFilesArray] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState('');
 
@@ -27,7 +29,7 @@ export const DocumentsRoute: FC = () => {
       .then(res => res.json())
       .then(json => {
         if (json) {
-          typeof(json.moved) === 'string' && setResponse(json.moved);
+          typeof (json.moved) === 'string' && setResponse(json.moved);
           setFilesArray(Object.values(json.files));
           setIsLoading(false);
         }
@@ -35,8 +37,39 @@ export const DocumentsRoute: FC = () => {
       .catch(err => {
         setIsLoading(false);
         setResponse(err);
-        console.log(err);
       });
+  }
+
+  function handleDelete(fileName) {
+    setModalError('');
+    const headers = new Headers();
+
+		fetch('http://melapelan.in/upload.php', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(fileName)
+    })
+			.then(res => res.json())
+			.then(json => {
+        if (json) {
+          setFilesArray(Object.values(json.files));
+        }
+      })
+      .catch(err => {
+        setModalError('Failed to delete document.')
+      })
+	}
+
+  const getModalContent = (name) => {
+    return (
+      <>
+        <div className={styles.modalMessage}>Are you sure you want to delete this document? <div>Name: <span>{name}</span></div></div>
+        <div className={styles.modalButtonContainer}>
+          <Button className={styles.modalButtonBlue} onClick={() => { handleDelete(name); setShowModal(false); }}>Delete</Button>
+          <Button className={styles.modalButtonRed} onClick={() => setShowModal(false)}>Cancel</Button>
+        </div>
+      </>
+    )
   }
 
   useEffect(() => {
@@ -49,20 +82,30 @@ export const DocumentsRoute: FC = () => {
       <PageHeader header="Documents"></PageHeader>
 
       {isLoading ? (
-        <Loader />
+        <Loader className={styles.loader}/>
       ) : (
-        filesArray && (
-          <div className={styles.response}>
-            {response}
-            <div>
-              <h3>Files on server:</h3>
-              {filesArray.length < 1 ? <p>No files located on server.</p> : filesArray.map(file => (
-                <p className={styles.document} key={file}>{file}</p>
-              ))}
+          filesArray && (
+            <div className={styles.response}>
+              {response}
+              <div>
+                <h3>Files on server:</h3>
+                {filesArray.length < 1 ? <p>No files located on server.</p> : filesArray.map((file, index) => (
+                  <div className={styles.document} key={file}>
+                    <p>{file}</p>
+                    <ModalLink content={getModalContent(file)}>
+                      <IconButton
+                        className={styles.actionBtn}
+                        disabled={isDeleting}
+                        image="icons/delete-primary.svg"
+                        title="Delete Service"
+                      />
+                    </ModalLink>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )
-      )}
+          )
+        )}
     </ContentBox>
   );
 };

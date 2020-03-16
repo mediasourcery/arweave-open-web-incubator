@@ -1,0 +1,16 @@
+@import '../../styles/Branding.scss';
+
+.button {
+  background: none;
+  border: 0;
+  color: $color-primary;
+  cursor: pointer;
+  display: inline;
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+  } 
+}
