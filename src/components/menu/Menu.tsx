@@ -9,9 +9,13 @@ import { MenuContext, PageContext } from '../../contexts';
 import styles from './Menu.scss';
 
 const mainNavLinks: {
-  page: 'upload';
+  page: 'upload' | 'documents';
   displayName: string;
 }[] = [
+  {
+    page: 'documents',
+    displayName: 'Documents'
+  },
   {
     page: 'upload',
     displayName: 'File Upload'

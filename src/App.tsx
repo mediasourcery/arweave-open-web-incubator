@@ -12,6 +12,7 @@ import {
 } from './contexts';
 
 import {
+  DocumentsRoute,
 	HomeRoute,
 	UploadRoute
 } from './routes';
@@ -51,6 +52,7 @@ const App: React.FunctionComponent = () => {
           <Breadcrumbs />
           <Router basepath={process.env.PUBLIC_URL}>
             <Route path="/" component={HomeRoute} />
+            <Route path="/documents" component={DocumentsRoute} />
             <Route path="/upload" component={UploadRoute} />
           </Router>
         </div>

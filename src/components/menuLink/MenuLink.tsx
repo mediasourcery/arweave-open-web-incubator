@@ -8,7 +8,7 @@ import { Icon } from '../';
 import styles from './MenuLink.scss';
 
 interface IProps {
-  page: 'upload';
+  page: 'upload' | 'documents';
   displayName: string;
   currentPage: string;
   onClick: MouseEventHandler;
