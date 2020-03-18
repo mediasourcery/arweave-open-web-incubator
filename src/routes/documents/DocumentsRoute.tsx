@@ -11,6 +11,8 @@ import {
 } from '../../components';
 import { ModalContext, PageContext } from '../../contexts';
 
+import { redirectToLogin } from '../../utils';
+
 import styles from './DocumentsRoute.scss';
 
 export const DocumentsRoute: FC = () => {
@@ -42,6 +44,9 @@ export const DocumentsRoute: FC = () => {
         }
       })
       .catch(err => {
+        if (err.response?.status === 401) {
+          redirectToLogin();
+        }
         setIsLoading(false);
         setResponse(err);
       });
@@ -62,7 +67,7 @@ export const DocumentsRoute: FC = () => {
           setFilesArray(Object.values(json.files));
         }
       })
-      .catch(err => {
+      .catch(() => {
         setModalError('Failed to delete document.');
       });
   }

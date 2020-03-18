@@ -3,6 +3,7 @@ import { FC, FormEvent, useContext, useEffect, useState } from 'react';
 
 import { Loader, Button, ContentBox, PageHeader } from '../../components';
 import { PageContext } from '../../contexts';
+import { redirectToLogin } from '../../utils';
 
 import styles from './UploadRoute.scss';
 
@@ -36,6 +37,9 @@ export const UploadRoute: FC = () => {
         setIsLoading(false);
       })
       .catch(err => {
+        if (err.response?.status === 401) {
+          redirectToLogin();
+        }
         setIsLoading(false);
         setErrorMessage(err);
         console.log(err);
