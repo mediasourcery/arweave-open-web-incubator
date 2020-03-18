@@ -14,9 +14,13 @@ export const Header: React.FunctionComponent = () => {
   const token = decodeToken(sessionStorage.getItem('token'));
 
   const { showMenu, setShowMenu } = useContext(MenuContext);
-  const { setPopoverItems, showPopover, setShowPopover } = useContext(PopoverContext);
+  const { setPopoverItems, showPopover, setShowPopover } = useContext(
+    PopoverContext
+  );
 
-  const emailIdentifier = token.identifiers.find(identifier => identifier.type === 'email');
+  const emailIdentifier = token.identifiers.find(
+    identifier => identifier.type === 'email'
+  );
   const email = emailIdentifier ? emailIdentifier.value : '';
 
   return (
@@ -43,7 +47,7 @@ export const Header: React.FunctionComponent = () => {
       <div className={styles.user}>
         <button
           className={styles.userButton}
-          onMouseDown={(event) => {
+          onMouseDown={event => {
             event.stopPropagation();
             setShowMenu(false);
             setShowPopover(!showPopover);
@@ -67,7 +71,14 @@ export const Header: React.FunctionComponent = () => {
             ]);
           }}
         >
-          <Icon image={`https://www.gravatar.com/avatar/${crypto.createHash('md5').update(email || '').digest('hex').toString()}`} size={32} />
+          <Icon
+            image={`https://www.gravatar.com/avatar/${crypto
+              .createHash('md5')
+              .update(email || '')
+              .digest('hex')
+              .toString()}`}
+            size={32}
+          />
         </button>
       </div>
     </header>

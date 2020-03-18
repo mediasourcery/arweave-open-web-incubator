@@ -39,10 +39,7 @@ export const Popover: React.FC = () => {
       {popoverItems.map(item => (
         <li className={styles.popoverItem} key={item.url}>
           {item.url.match(/^http/i) ? (
-            <a
-              href={item.url}
-              onClick={() => setShowPopover(false)}
-            >
+            <a href={item.url} onClick={() => setShowPopover(false)}>
               {item.text}
             </a>
           ) : (

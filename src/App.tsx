@@ -12,11 +12,7 @@ import {
   BreadcrumbsContextProvider
 } from './contexts';
 
-import {
-  DocumentsRoute,
-  HomeRoute,
-  UploadRoute
-} from './routes';
+import { DocumentsRoute, HomeRoute, UploadRoute } from './routes';
 import { decodeToken } from './utils';
 
 import styles from './App.scss';
@@ -35,7 +31,7 @@ const App: React.FunctionComponent = () => {
   if (query.token) {
     sessionStorage.setItem('token', query.token);
   } else if (!sessionStorage.getItem('token')) {
-    window.location.href = `${process.env.AUTH_UI_AUTHORIZE_URL}?client_id=${process.env.DOC_UI_UPLOADER_CLIENT_ID}`;
+    window.location.href = `${process.env.AUTH_UI_AUTHORIZE_URL}?client_id=${process.env.DOC_UI_UPLOADER_CLIENT_ID}&redirect_uri=${location.pathname}${location.search}`;
   }
 
   const decodedToken = decodeToken(sessionStorage.getItem('token'));

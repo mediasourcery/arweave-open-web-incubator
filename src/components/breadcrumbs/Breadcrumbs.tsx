@@ -10,10 +10,8 @@ export const Breadcrumbs: React.FC = () => {
   const { breadcrumbs } = useContext(BreadcrumbsContext);
 
   return (
-    <ul
-      className={styles.breadcrumbs}
-    >
-      {breadcrumbs.map((breadcrumb) => (
+    <ul className={styles.breadcrumbs}>
+      {breadcrumbs.map(breadcrumb => (
         <li className={styles.breadcrumb} key={breadcrumb.url}>
           <Link
             className={styles.link}

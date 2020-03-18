@@ -8,13 +8,6 @@ interface IProps {
   styleOverride?: string;
 }
 
-export const ContentBox: React.FC<IProps> = ({
-  children,
-  styleOverride,
-}) => (
-  <div
-    className={classNames(styles.box, styleOverride)}
-  >
-    {children}
-  </div>
+export const ContentBox: React.FC<IProps> = ({ children, styleOverride }) => (
+  <div className={classNames(styles.box, styleOverride)}>{children}</div>
 );

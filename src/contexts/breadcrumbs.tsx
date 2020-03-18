@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, createContext, useState } from 'react';
 
 interface IProps {
   breadcrumbs: IBreadcrumb[];
-  setBreadcrumbs: Dispatch<SetStateAction<IBreadcrumb[]>>
+  setBreadcrumbs: Dispatch<SetStateAction<IBreadcrumb[]>>;
 }
 
 interface IBreadcrumb {
@@ -13,15 +13,16 @@ interface IBreadcrumb {
 
 export const BreadcrumbsContext = createContext<IProps>({
   breadcrumbs: [],
-  setBreadcrumbs: () => { },
+  setBreadcrumbs: () => {}
 });
 
-export const BreadcrumbsContextProvider: React.SFC = (props) => {
-
-  const [breadcrumbs, setBreadcrumbs] = useState([{
-    text: 'Home',
-    url: ''
-  }]);
+export const BreadcrumbsContextProvider: React.SFC = props => {
+  const [breadcrumbs, setBreadcrumbs] = useState([
+    {
+      text: 'Home',
+      url: ''
+    }
+  ]);
 
   const value = { breadcrumbs, setBreadcrumbs };
 

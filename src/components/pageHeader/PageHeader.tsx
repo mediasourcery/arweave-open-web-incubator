@@ -16,8 +16,6 @@ export const PageHeader: React.FC<IProps> = ({
 }) => (
   <div className={classNames(styles.base, styleOverride)}>
     <h1 className={styles.heading}>{header}</h1>
-    <div>
-      {children}
-    </div>
+    <div>{children}</div>
   </div>
 );

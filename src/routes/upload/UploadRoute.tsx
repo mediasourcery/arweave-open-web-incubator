@@ -3,6 +3,7 @@ import { FC, FormEvent, useContext, useEffect, useState } from 'react';
 
 import { Loader, Button, ContentBox, PageHeader } from '../../components';
 import { PageContext } from '../../contexts';
+import { redirectToLogin } from '../../utils';
 
 import styles from './UploadRoute.scss';
 
@@ -32,10 +33,13 @@ export const UploadRoute: FC = () => {
       body: formData
     })
       .then(() => {
-        setSuccessMessage('Document uploaded successfully!')
+        setSuccessMessage('Document uploaded successfully!');
         setIsLoading(false);
       })
       .catch(err => {
+        if (err.response?.status === 401) {
+          redirectToLogin();
+        }
         setIsLoading(false);
         setErrorMessage(err);
         console.log(err);
@@ -53,33 +57,11 @@ export const UploadRoute: FC = () => {
 
   useEffect(() => {
     setPage('upload');
-	}, []);
-
-	useEffect(() => {
-		async function fetchFilesList() {
-			const response = await fetch('https://melapelan.in/upload.php');
-			const data = await response.json();
-			setFilesArray(Object.values(data.files));
-		}
-
-		fetchFilesList();
-	}, []);
-
-	function renderFilesList() {
-		if (filesArray) {
-			return filesArray.map(f => <li key={f}><a href="http://melapelan.in/uploads/">{f}</a></li>);
-		}
-	}
+  }, []);
 
   return (
     <ContentBox>
       <PageHeader header="Document Uploader"></PageHeader>
-
-			<div className="files-list-conta">
-				<ol className="files-list">
-					{renderFilesList()}
-				</ol>
-			</div>
 
       <form onSubmit={e => handleSubmit(e)} className={styles.form}>
         <select
@@ -109,20 +91,14 @@ export const UploadRoute: FC = () => {
         </Button>
       </form>
 
-      {isLoading ? (
-        <Loader className={styles.loader} />
-      ) : null}
+      {isLoading ? <Loader className={styles.loader} /> : null}
 
       {successMessage ? (
-        <div className={styles.messageSuccess}>
-          {successMessage}
-        </div>
+        <div className={styles.messageSuccess}>{successMessage}</div>
       ) : null}
 
       {errorMessage ? (
-        <div className={styles.messageError}>
-          {errorMessage}
-        </div>
+        <div className={styles.messageError}>{errorMessage}</div>
       ) : null}
     </ContentBox>
   );

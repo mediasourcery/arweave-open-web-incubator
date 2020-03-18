@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Dispatch, SetStateAction, createContext, useState } from 'react';
 
 interface IProps {
-  modalContent: React.ReactNode,
+  modalContent: React.ReactNode;
   setModalContent: Dispatch<SetStateAction<React.ReactNode>>;
   showModal: boolean;
   setShowModal: Dispatch<SetStateAction<boolean>>;
@@ -12,19 +12,26 @@ interface IProps {
 
 export const ModalContext = createContext<IProps>({
   showModal: false,
-  setShowModal: () => { },
-  setModalContent: () => { },
+  setShowModal: () => {},
+  setModalContent: () => {},
   modalContent: {},
   modalError: '',
-  setModalError: () => { }
+  setModalError: () => {}
 });
 
-export const ModalContextProvider: React.SFC = (props) => {
+export const ModalContextProvider: React.SFC = props => {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState(<div />);
   const [modalError, setModalError] = useState('');
 
-  const value = { showModal, setShowModal, modalContent, setModalContent, modalError, setModalError };
+  const value = {
+    showModal,
+    setShowModal,
+    modalContent,
+    setModalContent,
+    modalError,
+    setModalError
+  };
 
   return (
     <ModalContext.Provider value={value}>

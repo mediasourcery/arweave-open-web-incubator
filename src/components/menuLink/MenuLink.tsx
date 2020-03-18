@@ -28,12 +28,7 @@ export const MenuLink: React.FC<IProps> = ({
     onClick={onClick}
     to={`${process.env.PUBLIC_URL}${page}`}
   >
-    <Icon
-      image={
-        `icons/${page}-white.svg`
-      }
-      size={16}
-    />
+    <Icon image={`icons/${page}-white.svg`} size={16} />
     <span className={styles.text}>{displayName}</span>
   </Link>
-)
+);

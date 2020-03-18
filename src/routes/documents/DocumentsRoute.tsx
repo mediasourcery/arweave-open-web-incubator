@@ -1,8 +1,17 @@
 import * as React from 'react';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
 
-import { ModalLink, IconButton, Loader, Button, ContentBox, PageHeader } from '../../components';
+import {
+  ModalLink,
+  IconButton,
+  Loader,
+  Button,
+  ContentBox,
+  PageHeader
+} from '../../components';
 import { ModalContext, PageContext } from '../../contexts';
+
+import { redirectToLogin } from '../../utils';
 
 import styles from './DocumentsRoute.scss';
 
@@ -29,12 +38,15 @@ export const DocumentsRoute: FC = () => {
       .then(res => res.json())
       .then(json => {
         if (json) {
-          typeof (json.moved) === 'string' && setResponse(json.moved);
+          typeof json.moved === 'string' && setResponse(json.moved);
           setFilesArray(Object.values(json.files));
           setIsLoading(false);
         }
       })
       .catch(err => {
+        if (err.response?.status === 401) {
+          redirectToLogin();
+        }
         setIsLoading(false);
         setResponse(err);
       });
@@ -44,33 +56,51 @@ export const DocumentsRoute: FC = () => {
     setModalError('');
     const headers = new Headers();
 
-		fetch('http://melapelan.in/upload.php', {
+    fetch('http://melapelan.in/upload.php', {
       method: 'POST',
       headers,
       body: JSON.stringify(fileName)
     })
-			.then(res => res.json())
-			.then(json => {
+      .then(res => res.json())
+      .then(json => {
         if (json) {
           setFilesArray(Object.values(json.files));
         }
       })
-      .catch(err => {
-        setModalError('Failed to delete document.')
-      })
-	}
+      .catch(() => {
+        setModalError('Failed to delete document.');
+      });
+  }
 
-  const getModalContent = (name) => {
+  const getModalContent = name => {
     return (
       <>
-        <div className={styles.modalMessage}>Are you sure you want to delete this document? <div>Name: <span>{name}</span></div></div>
+        <div className={styles.modalMessage}>
+          Are you sure you want to delete this document?{' '}
+          <div>
+            Name: <span>{name}</span>
+          </div>
+        </div>
         <div className={styles.modalButtonContainer}>
-          <Button className={styles.modalButtonBlue} onClick={() => { handleDelete(name); setShowModal(false); }}>Delete</Button>
-          <Button className={styles.modalButtonRed} onClick={() => setShowModal(false)}>Cancel</Button>
+          <Button
+            className={styles.modalButtonBlue}
+            onClick={() => {
+              handleDelete(name);
+              setShowModal(false);
+            }}
+          >
+            Delete
+          </Button>
+          <Button
+            className={styles.modalButtonRed}
+            onClick={() => setShowModal(false)}
+          >
+            Cancel
+          </Button>
         </div>
       </>
-    )
-  }
+    );
+  };
 
   useEffect(() => {
     setPage('documents');
@@ -82,14 +112,17 @@ export const DocumentsRoute: FC = () => {
       <PageHeader header="Documents"></PageHeader>
 
       {isLoading ? (
-        <Loader className={styles.loader}/>
+        <Loader className={styles.loader} />
       ) : (
-          filesArray && (
-            <div className={styles.response}>
-              {response}
-              <div>
-                <h3>Files on server:</h3>
-                {filesArray.length < 1 ? <p>No files located on server.</p> : filesArray.map((file, index) => (
+        filesArray && (
+          <div className={styles.response}>
+            {response}
+            <div>
+              <h3>Files on server:</h3>
+              {filesArray.length < 1 ? (
+                <p>No files located on server.</p>
+              ) : (
+                filesArray.map((file, index) => (
                   <div className={styles.document} key={file}>
                     <p>{file}</p>
                     <ModalLink content={getModalContent(file)}>
@@ -101,11 +134,12 @@ export const DocumentsRoute: FC = () => {
                       />
                     </ModalLink>
                   </div>
-                ))}
-              </div>
+                ))
+              )}
             </div>
-          )
-        )}
+          </div>
+        )
+      )}
     </ContentBox>
   );
 };
