@@ -34,7 +34,7 @@
     "clean": "rm -rf .cache/ && rm -rf dist/",
     "format": "prettier \"src/**/*.{js,tsx,html}\" --write",
     "start": "node parcel/start",
-    "start:dev": "NODE_ENV=development node parcel/start --port 4000",
+    "start:dev": "NODE_ENV=development node parcel/start --port 8500",
     "watch": "node parcel/watch"
   }
 }
