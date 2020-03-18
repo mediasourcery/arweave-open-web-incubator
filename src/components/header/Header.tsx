@@ -54,11 +54,11 @@ export const Header: React.FunctionComponent = () => {
             setPopoverItems([
               {
                 text: 'Switch Apps',
-                url: process.env.AUTH_UI_AUTHORIZE_URL
+                url: process.env.AUTH_UI_GATEWAY_URL
               },
               {
                 text: 'Change Password',
-                url: `${process.env.AUTH_UI_AUTHORIZE_URL}/change-password`
+                url: `${process.env.AUTH_UI_GATEWAY_URL}/change-password`
               },
               {
                 text: 'Edit User',

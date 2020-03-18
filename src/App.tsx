@@ -36,7 +36,7 @@ const App: React.FunctionComponent = () => {
 
   const decodedToken = decodeToken(sessionStorage.getItem('token'));
   if (!decodedToken.capabilities.find(c => c.name === 'admin')) {
-    window.location.href = `${process.env.AUTH_UI_AUTHORIZE_URL}/unauthorized`;
+    window.location.href = `${process.env.AUTH_UI_GATEWAY_URL}/unauthorized`;
     return;
   }
 

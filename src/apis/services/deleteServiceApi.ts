@@ -25,7 +25,7 @@ export interface IDeleteServiceApiResponseData {
 }
 
 export const deleteServiceApi: IDeleteServiceApi = async (name) => {
-  console.log(JSON.stringify(process.env.AUTH_UI_AUTHORIZE_URL));
+  console.log(JSON.stringify(process.env.AUTH_UI_GATEWAY_URL));
   const response = await axios({
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('token')}`
