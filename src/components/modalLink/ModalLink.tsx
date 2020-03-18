@@ -24,16 +24,23 @@ export const ModalLink: React.FC<IProps> = ({
     <>
       <div
         className={styles.button}
-        style={image ? {
-          backgroundImage: `url(/${image})`,
-          height: `${size}px`,
-          width: `${size}px`
-        } : null}
+        style={
+          image
+            ? {
+                backgroundImage: `url(/${image})`,
+                height: `${size}px`,
+                width: `${size}px`
+              }
+            : null
+        }
         // type={type}
-        onClick={() => { setShowModal(true); setModalContent(content); }}
+        onClick={() => {
+          setShowModal(true);
+          setModalContent(content);
+        }}
       >
         {children}
       </div>
     </>
-  )
-}
+  );
+};

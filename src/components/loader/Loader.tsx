@@ -10,16 +10,10 @@ interface IProps {
 }
 
 export const Loader: React.FC<IProps> = ({ className }) => (
-  <div
-    className={classNames(className, styles.loader)}
-  >
+  <div className={classNames(className, styles.loader)}>
     <div className={styles.loaderImageContainer}>
-      <Icon
-        image="icons/loader.svg"
-      />
+      <Icon image="icons/loader.svg" />
     </div>
-    <div className={styles.text}>
-      Loading...
-    </div>
+    <div className={styles.text}>Loading...</div>
   </div>
 );

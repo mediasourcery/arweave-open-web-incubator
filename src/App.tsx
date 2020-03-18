@@ -12,11 +12,7 @@ import {
   BreadcrumbsContextProvider
 } from './contexts';
 
-import {
-  DocumentsRoute,
-  HomeRoute,
-  UploadRoute
-} from './routes';
+import { DocumentsRoute, HomeRoute, UploadRoute } from './routes';
 import { decodeToken } from './utils';
 
 import styles from './App.scss';

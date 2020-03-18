@@ -8,10 +8,14 @@ interface IProps {
     text?: string;
     url?: string;
   }[];
-  setPopoverItems: Dispatch<SetStateAction<{
-    text?: string;
-    url?: string;
-  }[]>>;
+  setPopoverItems: Dispatch<
+    SetStateAction<
+      {
+        text?: string;
+        url?: string;
+      }[]
+    >
+  >;
   showPopover: boolean;
   setShowPopover: Dispatch<SetStateAction<boolean>>;
 }
@@ -27,15 +31,26 @@ export const PopoverContext = createContext<IProps>({
 
 export const PopoverContextProvider: React.SFC = props => {
   const [popoverElement, setPopoverElement] = useState<HTMLElement>(null);
-  const [popoverItems, setPopoverItems] = useState<{
-    text?: string;
-    url?: string;
-  }[]>([]);
+  const [popoverItems, setPopoverItems] = useState<
+    {
+      text?: string;
+      url?: string;
+    }[]
+  >([]);
   const [showPopover, setShowPopover] = useState(false);
 
-  const value = { popoverElement, setPopoverElement, popoverItems, setPopoverItems, showPopover, setShowPopover };
+  const value = {
+    popoverElement,
+    setPopoverElement,
+    popoverItems,
+    setPopoverItems,
+    showPopover,
+    setShowPopover
+  };
 
   return (
-    <PopoverContext.Provider value={value}>{props.children}</PopoverContext.Provider>
+    <PopoverContext.Provider value={value}>
+      {props.children}
+    </PopoverContext.Provider>
   );
 };
