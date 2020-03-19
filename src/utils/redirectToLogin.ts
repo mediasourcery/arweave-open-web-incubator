@@ -5,7 +5,7 @@ export const redirectToLogin = () => {
   const redirectUri =
     location.pathname === process.env.PUBLIC_URL ||
     location.pathname === process.env.PUBLIC_URL.replace(/\/$/, '')
-      ? process.env.PUBLIC_URL
+      ? '/'
       : location.pathname.replace(
           new RegExp(`^${process.env.PUBLIC_URL}`, 'i'),
           '/'
