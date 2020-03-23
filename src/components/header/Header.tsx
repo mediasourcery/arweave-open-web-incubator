@@ -61,10 +61,6 @@ export const Header: React.FunctionComponent = () => {
                 url: `${process.env.AUTH_UI_GATEWAY_URL}/change-password`
               },
               {
-                text: 'Edit User',
-                url: `users/${token.sub}/edit`
-              },
-              {
                 text: 'Logout',
                 url: 'logout'
               }
