@@ -2,6 +2,7 @@ import * as querystring from 'querystring';
 import * as React from 'react';
 import { render } from 'react-dom';
 import { Router, RouteComponentProps } from '@reach/router';
+import { Helmet } from 'react-helmet';
 
 import { Header, Menu, Modal, Popover, Breadcrumbs } from './components';
 import {
@@ -12,7 +13,7 @@ import {
   BreadcrumbsContextProvider
 } from './contexts';
 
-import { DocumentsRoute, HomeRoute, UploadRoute } from './routes';
+import { DocumentsRoute, HomeRoute, LogoutRoute, UploadRoute } from './routes';
 import { decodeToken, redirectToLogin } from './utils';
 
 import styles from './App.scss';
@@ -42,6 +43,7 @@ const App: React.FunctionComponent = () => {
 
   return (
     <>
+    <Helmet title="Home" titleTemplate={`%s | ${process.env.DOC_UI_UPLOADER_TITLE}`} />
       <Header />
       <div className={styles.container}>
         <Menu />
@@ -50,6 +52,7 @@ const App: React.FunctionComponent = () => {
           <Router basepath={process.env.PUBLIC_URL}>
             <Route path="/" component={HomeRoute} />
             <Route path="/documents" component={DocumentsRoute} />
+            <Route path="/logout" component={LogoutRoute} />
             <Route path="/upload" component={UploadRoute} />
           </Router>
         </div>
