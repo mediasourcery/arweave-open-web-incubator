@@ -31,7 +31,7 @@ export const DocumentsRoute: FC = () => {
     const headers = new Headers();
     headers.delete('Content-Type');
 
-    fetch('http://melapelan.in/upload.php', {
+    fetch('https://hdsapps.com/upload.php', {
       method: 'get',
       headers
     })
@@ -56,7 +56,7 @@ export const DocumentsRoute: FC = () => {
     setModalError('');
     const headers = new Headers();
 
-    fetch('http://melapelan.in/upload.php', {
+    fetch('https://hdsapps.com/upload.php', {
       method: 'POST',
       headers,
       body: JSON.stringify(fileName)

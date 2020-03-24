@@ -27,7 +27,7 @@ export const UploadRoute: FC = () => {
     const headers = new Headers();
     headers.delete('Content-Type');
 
-    fetch('http://melapelan.in/upload.php', {
+    fetch('https://hdsapps.com/upload.php', {
       method: 'post',
       headers,
       body: formData
