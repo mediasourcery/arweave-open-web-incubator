@@ -14,7 +14,7 @@ import {
 } from './contexts';
 
 import { DocumentsRoute, HomeRoute, LogoutRoute, UploadRoute } from './routes';
-import { decodeToken, redirectToLogin } from './utils';
+import { redirectToLogin } from './utils';
 
 import styles from './App.scss';
 
@@ -35,15 +35,12 @@ const App: React.FunctionComponent = () => {
     redirectToLogin();
   }
 
-  const decodedToken = decodeToken(sessionStorage.getItem('token'));
-  if (!decodedToken.capabilities.find(c => c.name === 'admin')) {
-    window.location.href = `${process.env.AUTH_UI_GATEWAY_URL}/unauthorized`;
-    return;
-  }
-
   return (
     <>
-    <Helmet title="Home" titleTemplate={`%s | ${process.env.DOC_UI_UPLOADER_TITLE}`} />
+      <Helmet
+        title="Home"
+        titleTemplate={`%s | ${process.env.DOC_UI_UPLOADER_TITLE}`}
+      />
       <Header />
       <div className={styles.container}>
         <Menu />
