@@ -9,7 +9,7 @@ import {
   ContentBox,
   PageHeader
 } from '../../components';
-import { ModalContext, PageContext } from '../../contexts';
+import { BreadcrumbsContext, ModalContext, PageContext } from '../../contexts';
 
 import { redirectToLogin } from '../../utils';
 
@@ -18,6 +18,7 @@ import styles from './DocumentsRoute.scss';
 export const DocumentsRoute: FC = () => {
   const { setPage } = useContext(PageContext);
   const { setShowModal, setModalError } = useContext(ModalContext);
+  const { setBreadcrumbs } = useContext(BreadcrumbsContext);
 
   const [filesArray, setFilesArray] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -105,6 +106,10 @@ export const DocumentsRoute: FC = () => {
   useEffect(() => {
     setPage('documents');
     getDocuments();
+    setBreadcrumbs([{
+      text: 'Documents',
+      url: 'documents'
+    }])
   }, []);
 
   return (
