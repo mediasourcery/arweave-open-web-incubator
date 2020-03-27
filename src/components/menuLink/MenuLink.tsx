@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import * as React from 'react';
 import { MouseEventHandler } from 'react';
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
 
 import { Icon } from '../';
 
@@ -26,7 +26,7 @@ export const MenuLink: React.FC<IProps> = ({
       currentPage === page ? styles.active : null
     )}
     onClick={onClick}
-    to={`${process.env.PUBLIC_URL}${page}`}
+    to={`/${page}`}
   >
     <Icon image={`icons/${page}-white.svg`} size={16} />
     <span className={styles.text}>{displayName}</span>

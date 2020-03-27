@@ -25,7 +25,6 @@ export interface IGetServicesApiResponseData {
 }
 
 export const getServicesApi: IGetServicesApi = async () => {
-  console.log(JSON.stringify(process.env.AUTH_UI_AUTHORIZE_URL));
   const response = await axios({
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('token')}`

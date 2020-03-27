@@ -1,7 +1,7 @@
 import * as querystring from 'querystring';
 import * as React from 'react';
 import { render } from 'react-dom';
-import { Router, RouteComponentProps } from '@reach/router';
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
 import { Header, Menu, Modal, Popover, Breadcrumbs } from './components';
 import {
@@ -13,15 +13,10 @@ import {
 } from './contexts';
 
 import { DocumentsRoute, HomeRoute, UploadRoute } from './routes';
+
 import { decodeToken } from './utils';
 
 import styles from './App.scss';
-
-type Props = { component: React.ComponentType } & RouteComponentProps;
-const Route: React.FunctionComponent<Props> = ({
-  component: Component,
-  ...rest
-}) => <Component {...rest} />;
 
 const App: React.FunctionComponent = () => {
   const query: {
@@ -42,19 +37,22 @@ const App: React.FunctionComponent = () => {
 
   return (
     <>
-      <Header />
-      <div className={styles.container}>
-        <Menu />
-        <div className={styles.content}>
-          <Breadcrumbs />
-          <Router basepath={process.env.PUBLIC_URL}>
-            <Route path="/" component={HomeRoute} />
-            <Route path="/documents" component={DocumentsRoute} />
-            <Route path="/upload" component={UploadRoute} />
-          </Router>
+      <Router basename={process.env.PUBLIC_URL}>
+        <Header />
+        <div className={styles.container}>
+          <Menu />
+          <div className={styles.content}>
+            <Breadcrumbs />
+
+            <Switch>
+              <Route path="/" component={HomeRoute} exact />
+              <Route path="/documents" component={DocumentsRoute} exact />
+              <Route path="/upload" component={UploadRoute} exact />
+            </Switch>
+          </div>
         </div>
-      </div>
-      <Popover />
+        <Popover />
+      </Router>
       <Modal />
     </>
   );

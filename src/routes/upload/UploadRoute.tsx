@@ -42,7 +42,6 @@ export const UploadRoute: FC = () => {
         }
         setIsLoading(false);
         setErrorMessage(err);
-        console.log(err);
       });
   }
 
@@ -51,7 +50,6 @@ export const UploadRoute: FC = () => {
   }
 
   function handleSelect(e): void {
-    console.log(e.target.value);
     setFileType(e.target.value);
   }
 

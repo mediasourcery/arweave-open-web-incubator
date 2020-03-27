@@ -35,12 +35,10 @@ export const FileUploader: React.FunctionComponent = () => {
           setFilesArray(Object.values(json.files));
           setIsLoading(false);
         }
-        console.log(json);
       })
       .catch(err => {
         setIsLoading(false);
         setResponse(err);
-        console.log(err);
       });
   }
 
@@ -49,7 +47,6 @@ export const FileUploader: React.FunctionComponent = () => {
   }
 
   function handleSelect(e): void {
-    console.log(e.target.value);
     setFileType(e.target.value);
   }
 
