@@ -2,6 +2,7 @@ import * as querystring from 'querystring';
 import * as React from 'react';
 import { render } from 'react-dom';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import { Header, Menu, Modal, Popover, Breadcrumbs } from './components';
 import {
@@ -12,9 +13,10 @@ import {
   BreadcrumbsContextProvider
 } from './contexts';
 
-import { DocumentsRoute, HomeRoute, UploadRoute } from './routes';
 
 import { decodeToken } from './utils';
+import { DocumentsRoute, HomeRoute, LogoutRoute, UploadRoute } from './routes';
+import { redirectToLogin } from './utils';
 
 import styles from './App.scss';
 
@@ -26,17 +28,15 @@ const App: React.FunctionComponent = () => {
   if (query.token) {
     sessionStorage.setItem('token', query.token);
   } else if (!sessionStorage.getItem('token')) {
-    window.location.href = `${process.env.AUTH_UI_AUTHORIZE_URL}?client_id=${process.env.DOC_UI_UPLOADER_CLIENT_ID}&redirect_uri=${location.pathname}${location.search}`;
-  }
-
-  const decodedToken = decodeToken(sessionStorage.getItem('token'));
-  if (!decodedToken.capabilities.find(c => c.name === 'admin')) {
-    window.location.href = `${process.env.AUTH_UI_AUTHORIZE_URL}/unauthorized`;
-    return;
+    redirectToLogin();
   }
 
   return (
     <>
+    <Helmet
+        title="Home"
+        titleTemplate={`%s | ${process.env.DOC_UI_UPLOADER_TITLE}`}
+      />
       <Router basename={process.env.PUBLIC_URL}>
         <Header />
         <div className={styles.container}>

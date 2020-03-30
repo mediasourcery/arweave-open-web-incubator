@@ -23,7 +23,7 @@ export const FileUploader: React.FunctionComponent = () => {
     const headers = new Headers();
     headers.delete('Content-Type');
 
-    fetch('http://melapelan.in/upload.php', {
+    fetch(`${process.env.DOC_API_URL}/upload.php`, {
       method: 'post',
       headers,
       body: formData

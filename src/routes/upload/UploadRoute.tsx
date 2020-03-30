@@ -2,13 +2,14 @@ import * as React from 'react';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
 
 import { Loader, Button, ContentBox, PageHeader } from '../../components';
-import { PageContext } from '../../contexts';
+import { BreadcrumbsContext, PageContext } from '../../contexts';
 import { redirectToLogin } from '../../utils';
 
 import styles from './UploadRoute.scss';
 
 export const UploadRoute: FC = () => {
   const { setPage } = useContext(PageContext);
+  const { setBreadcrumbs } = useContext(BreadcrumbsContext);
 
   const [file, setFile] = useState(null);
   const [fileType, setFileType] = useState(null);
@@ -27,7 +28,7 @@ export const UploadRoute: FC = () => {
     const headers = new Headers();
     headers.delete('Content-Type');
 
-    fetch('http://melapelan.in/upload.php', {
+    fetch(`${process.env.DOC_API_URL}/upload.php`, {
       method: 'post',
       headers,
       body: formData
@@ -55,6 +56,10 @@ export const UploadRoute: FC = () => {
 
   useEffect(() => {
     setPage('upload');
+    setBreadcrumbs([{
+      text: 'File Upload',
+      url: 'upload'
+    }])
   }, []);
 
   return (

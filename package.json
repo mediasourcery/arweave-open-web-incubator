@@ -1,6 +1,6 @@
 {
   "name": "msi-doc-ui-uploader",
-  "version": "2.5.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@types/node": "^12.12.25",
@@ -9,6 +9,7 @@
     "jsonwebtoken": "^8.5.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-helmet": "^5.2.1",
     "react-router-dom": "^5.1.2",
     "react-transition-group": "^4.3.0"
   },
@@ -17,6 +18,7 @@
     "@types/jsonwebtoken": "^8.3.7",
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
+    "@types/react-helmet": "^5.0.15",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-static-files-copy": "^2.3.1",
     "parcel-plugin-typed-css-modules": "^1.1.0",
@@ -32,7 +34,7 @@
     "clean": "rm -rf .cache/ && rm -rf dist/",
     "format": "prettier \"src/**/*.{js,tsx,html}\" --write",
     "start": "node parcel/start",
-    "start:dev": "NODE_ENV=development node parcel/start --port 4000",
+    "start:dev": "NODE_ENV=development node parcel/start --port 8500",
     "watch": "node parcel/watch"
   }
 }
