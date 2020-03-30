@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import * as React from 'react';
 import { useContext } from 'react';
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
 
 import { Icon, IconButton } from '..';
 
@@ -29,7 +29,7 @@ export const Header: React.FunctionComponent = () => {
         <Link
           className={styles.titleLink}
           onClick={() => setShowMenu(false)}
-          to={`${process.env.PUBLIC_URL}`}
+          to="/"
         >
           <Icon image="icons/auth-icon.svg" size={32} />
           <span className={styles.text}>Doc Uploader v1.0</span>

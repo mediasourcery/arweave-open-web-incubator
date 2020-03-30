@@ -16,7 +16,6 @@ export const Icon: React.FC<IProps> = ({
   size = 24,
   title = ''
 }) => {
-  console.log(image);
   return (
     <span
       className={classNames(styles.icon, className)}

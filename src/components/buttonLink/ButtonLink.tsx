@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { MouseEventHandler } from 'react';
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
 
 import { Button } from '../';
 
@@ -20,11 +20,7 @@ interface IProps {
 }
 
 export const ButtonLink: React.FC<IProps> = ({ children, page, onClick }) => (
-  <Link
-    className={styles.link}
-    onClick={onClick}
-    to={`${process.env.PUBLIC_URL}${page}`}
-  >
+  <Link className={styles.link} onClick={onClick} to={`/${page}`}>
     <Button styleOverride={styles.button}>{children}</Button>
   </Link>
 );

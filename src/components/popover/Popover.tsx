@@ -1,4 +1,4 @@
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
 import * as React from 'react';
 import { useContext, useLayoutEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
@@ -43,10 +43,7 @@ export const Popover: React.FC = () => {
               {item.text}
             </a>
           ) : (
-            <Link
-              onClick={() => setShowPopover(false)}
-              to={`${process.env.PUBLIC_URL}${item.url}`}
-            >
+            <Link onClick={() => setShowPopover(false)} to={`/${item.url}`}>
               {item.text}
             </Link>
           )}
