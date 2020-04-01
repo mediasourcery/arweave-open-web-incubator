@@ -47,6 +47,7 @@ const App: React.FunctionComponent = () => {
             <Switch>
               <Route path="/" component={HomeRoute} exact />
               <Route path="/documents" component={DocumentsRoute} exact />
+              <Route path="/logout" component={LogoutRoute} exact />
               <Route path="/upload" component={UploadRoute} exact />
             </Switch>
           </div>
