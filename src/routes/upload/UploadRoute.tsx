@@ -1,18 +1,22 @@
 import * as React from 'react';
+import * as blockstack from 'blockstack';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
 
 import { Loader, Button, ContentBox, PageHeader } from '../../components';
 import { BreadcrumbsContext, PageContext } from '../../contexts';
 import { redirectToLogin } from '../../utils';
+import { decodeToken } from '../../utils';
 
 import styles from './UploadRoute.scss';
 
 export const UploadRoute: FC = () => {
+  const token = decodeToken(sessionStorage.getItem('token'));
   const { setPage } = useContext(PageContext);
   const { setBreadcrumbs } = useContext(BreadcrumbsContext);
 
   const [file, setFile] = useState(null);
   const [fileType, setFileType] = useState(null);
+  const [serverType, setServerType] = useState('internal');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -54,6 +58,10 @@ export const UploadRoute: FC = () => {
     setFileType(e.target.value);
   }
 
+  function handleServerSelect(e): void {
+    setServerType(e.target.value);
+  }
+
   useEffect(() => {
     setPage('upload');
     setBreadcrumbs([{
@@ -78,6 +86,18 @@ export const UploadRoute: FC = () => {
           <option value="document">document</option>
           <option value="pdf">pdf</option>
         </select>
+        {token.sub.includes('blockstack') && 
+          <select
+          name="serverType"
+          id="serverType"
+          className={styles.select}
+          onChange={e => handleServerSelect(e)}
+        >
+          <option value="">- Choose upload location -</option>
+          <option value="internal">Internal Server (default)</option>
+          <option value="gaia">GAIA Server</option>
+        </select>
+        }
         <input
           type="file"
           name="upload-file"
