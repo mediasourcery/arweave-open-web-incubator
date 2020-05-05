@@ -22,6 +22,36 @@ export const UploadRoute: FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  const handleGaiaUpload = async (fileName, file, options) => {
+    try {
+      const response = await putFile(fileName, file, options).then(() => {
+        setSuccessMessage('Document uploaded successfully!');
+        setIsLoading(false);
+      })
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const handleServerUpload = async (method, headers, body) => {
+    try {
+      await fetch(`${process.env.DOC_API_URL}/upload.php`, {
+        method,
+        headers,
+        body
+      })
+      setSuccessMessage('Document uploaded successfully!');
+      setIsLoading(false);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        redirectToLogin();
+      }
+      setIsLoading(false);
+      setErrorMessage(err);
+    }
+  }
+
   function handleSubmit(e: FormEvent): void {
     let options = {
       encrypt: false
@@ -40,31 +70,9 @@ export const UploadRoute: FC = () => {
 
 
     if (serverType === 'gaia') {
-      try {
-        putFile(file.name, file, options).then(() => {
-          setSuccessMessage('Document uploaded successfully!');
-          setIsLoading(false);
-        })
-      } catch (err) {
-        console.log(err)
-      }
+      handleGaiaUpload(file.name, file, options);
     } else {
-      fetch(`${process.env.DOC_API_URL}/upload.php`, {
-        method: 'post',
-        headers,
-        body: formData
-      })
-        .then(() => {
-          setSuccessMessage('Document uploaded successfully!');
-          setIsLoading(false);
-        })
-        .catch(err => {
-          if (err.response?.status === 401) {
-            redirectToLogin();
-          }
-          setIsLoading(false);
-          setErrorMessage(err);
-        });
+      handleServerUpload('post', headers, formData)
     }
   }
 
