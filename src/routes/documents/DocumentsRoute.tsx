@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
+import { decodeToken } from '../../utils';
+import { getFile } from 'blockstack';
 
 import {
   ModalLink,
@@ -16,6 +18,7 @@ import { redirectToLogin } from '../../utils';
 import styles from './DocumentsRoute.scss';
 
 export const DocumentsRoute: FC = () => {
+  const token = decodeToken(sessionStorage.getItem('token'));
   const { setPage } = useContext(PageContext);
   const { setShowModal, setModalError } = useContext(ModalContext);
   const { setBreadcrumbs } = useContext(BreadcrumbsContext);
@@ -25,12 +28,33 @@ export const DocumentsRoute: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState('');
 
+  const getGaiaDocuments = async () => {
+    try {
+      const response = await getFile('statuses.json', {
+        decrypt: false, verify: false
+      })
+      console.log(response)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   function getDocuments(): void {
     setIsLoading(true);
     setFilesArray([]);
 
     const headers = new Headers();
     headers.delete('Content-Type');
+
+    if (token.sub.includes('blockstack')) {
+      try {
+        getFile('statuses.json', {
+          decrypt: false, verify: false
+        })
+      } catch (err) {
+        console.log(err)
+      }
+    }
 
     fetch(`${process.env.DOC_API_URL}/upload.php`, {
       method: 'get',
@@ -119,32 +143,32 @@ export const DocumentsRoute: FC = () => {
       {isLoading ? (
         <Loader className={styles.loader} />
       ) : (
-        filesArray && (
-          <div className={styles.response}>
-            {response}
-            <div>
-              <h3>Files on server:</h3>
-              {filesArray.length < 1 ? (
-                <p>No files located on server.</p>
-              ) : (
-                filesArray.map((file, index) => (
-                  <div className={styles.document} key={file}>
-                    <p>{file}</p>
-                    <ModalLink content={getModalContent(file)}>
-                      <IconButton
-                        className={styles.actionBtn}
-                        disabled={isDeleting}
-                        image="icons/delete-primary.svg"
-                        title="Delete Service"
-                      />
-                    </ModalLink>
-                  </div>
-                ))
-              )}
+          filesArray && (
+            <div className={styles.response}>
+              {response}
+              <div>
+                <h3>Files on server:</h3>
+                {filesArray.length < 1 ? (
+                  <p>No files located on server.</p>
+                ) : (
+                    filesArray.map((file, index) => (
+                      <div className={styles.document} key={file}>
+                        <p>{file}</p>
+                        <ModalLink content={getModalContent(file)}>
+                          <IconButton
+                            className={styles.actionBtn}
+                            disabled={isDeleting}
+                            image="icons/delete-primary.svg"
+                            title="Delete Service"
+                          />
+                        </ModalLink>
+                      </div>
+                    ))
+                  )}
+              </div>
             </div>
-          </div>
-        )
-      )}
+          )
+        )}
     </ContentBox>
   );
 };

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as blockstack from 'blockstack';
+import { putFile } from 'blockstack';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
 
 import { Loader, Button, ContentBox, PageHeader } from '../../components';
@@ -22,6 +23,10 @@ export const UploadRoute: FC = () => {
   const [successMessage, setSuccessMessage] = useState('');
 
   function handleSubmit(e: FormEvent): void {
+    let options = {
+      encrypt: false
+    }
+
     e.preventDefault();
     setIsLoading(true);
     setSuccessMessage('');
@@ -32,22 +37,35 @@ export const UploadRoute: FC = () => {
     const headers = new Headers();
     headers.delete('Content-Type');
 
-    fetch(`${process.env.DOC_API_URL}/upload.php`, {
-      method: 'post',
-      headers,
-      body: formData
-    })
-      .then(() => {
-        setSuccessMessage('Document uploaded successfully!');
-        setIsLoading(false);
+
+
+    if (serverType === 'gaia') {
+      try {
+        putFile(file.name, file, options).then(() => {
+          setSuccessMessage('Document uploaded successfully!');
+          setIsLoading(false);
+        })
+      } catch (err) {
+        console.log(err)
+      }
+    } else {
+      fetch(`${process.env.DOC_API_URL}/upload.php`, {
+        method: 'post',
+        headers,
+        body: formData
       })
-      .catch(err => {
-        if (err.response?.status === 401) {
-          redirectToLogin();
-        }
-        setIsLoading(false);
-        setErrorMessage(err);
-      });
+        .then(() => {
+          setSuccessMessage('Document uploaded successfully!');
+          setIsLoading(false);
+        })
+        .catch(err => {
+          if (err.response?.status === 401) {
+            redirectToLogin();
+          }
+          setIsLoading(false);
+          setErrorMessage(err);
+        });
+    }
   }
 
   function handleFile(e): void {
@@ -56,10 +74,6 @@ export const UploadRoute: FC = () => {
 
   function handleSelect(e): void {
     setFileType(e.target.value);
-  }
-
-  function handleServerSelect(e): void {
-    setServerType(e.target.value);
   }
 
   useEffect(() => {
@@ -86,17 +100,17 @@ export const UploadRoute: FC = () => {
           <option value="document">document</option>
           <option value="pdf">pdf</option>
         </select>
-        {token.sub.includes('blockstack') && 
+        {token.sub.includes('blockstack') &&
           <select
-          name="serverType"
-          id="serverType"
-          className={styles.select}
-          onChange={e => handleServerSelect(e)}
-        >
-          <option value="">- Choose upload location -</option>
-          <option value="internal">Internal Server (default)</option>
-          <option value="gaia">GAIA Server</option>
-        </select>
+            name="serverType"
+            id="serverType"
+            className={styles.select}
+            onChange={e => setServerType(e.target.value)}
+          >
+            <option value="">- Choose upload location -</option>
+            <option value="internal">Internal Server (default)</option>
+            <option value="gaia">GAIA Server</option>
+          </select>
         }
         <input
           type="file"
