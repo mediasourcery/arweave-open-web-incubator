@@ -76,11 +76,9 @@ export const DocumentsRoute: FC = () => {
   }
 
   const deleteGaiaServerDocument = async (name: string) => {
-    console.log(name);
     setModalError('');
     try {
       const response = await deleteFile(name);
-      console.log(response);
       setIsLoading(false);
       setFilesArray([]);
       await getDocuments();
@@ -90,6 +88,7 @@ export const DocumentsRoute: FC = () => {
   }
 
   const handleDelete = async (fileName) => {
+    setFilesArray([]);
     setModalError('');
     const headers = new Headers();
 
@@ -102,16 +101,9 @@ export const DocumentsRoute: FC = () => {
         body: JSON.stringify(fileName)
       })
       const json = await response.json();
-      console.log(json)
       if (json) {
-        Object.values(json.files).map(file => {
-          files.push({ fileName: file, server: 'Internal Server' });
-        })
+        await getDocuments();
       }
-      if (token.sub.includes('blockstack')) {
-        await getGaiaServerDocuments(files);
-      }
-      setFilesArray(files);
     } catch {
       setModalError('Failed to delete document.');
     }
@@ -130,7 +122,7 @@ export const DocumentsRoute: FC = () => {
           <Button
             className={styles.modalButtonBlue}
             onClick={() => {
-              server === 'GAIA server' ? deleteGaiaServerDocument(name) : handleDelete(name);
+              server === 'GAIA Server' ? deleteGaiaServerDocument(name) : handleDelete(name);
               setShowModal(false);
             }}
           >
@@ -155,6 +147,12 @@ export const DocumentsRoute: FC = () => {
       url: 'documents'
     }])
   }, []);
+
+  useEffect(() => {
+    if(filesArray){
+      return;
+    }
+  }, [filesArray])
 
   return (
     <ContentBox>

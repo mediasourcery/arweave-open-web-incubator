@@ -28,7 +28,6 @@ export const UploadRoute: FC = () => {
         setSuccessMessage('Document uploaded successfully!');
         setIsLoading(false);
       })
-      console.log(response);
     } catch (err) {
       console.log(err);
     }
