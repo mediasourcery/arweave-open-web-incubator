@@ -33,6 +33,7 @@ const App: React.FunctionComponent = () => {
 
   if (query.blockstackSession) {
     localStorage.setItem('blockstack-session', query.blockstackSession);
+  }
   const decodedToken = decodeToken(sessionStorage.getItem('token'));
 
   if (
