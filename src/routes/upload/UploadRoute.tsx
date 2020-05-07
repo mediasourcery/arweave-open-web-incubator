@@ -23,17 +23,22 @@ export const UploadRoute: FC = () => {
   const [successMessage, setSuccessMessage] = useState('');
 
   const handleGaiaUpload = async (fileName, file, options) => {
+    setErrorMessage('');
+    setSuccessMessage('');
     try {
-      const response = await putFile(fileName, file, options).then(() => {
+      await putFile(fileName, file, options).then(() => {
         setSuccessMessage('Document uploaded successfully!');
         setIsLoading(false);
       })
     } catch (err) {
       console.log(err);
+      setErrorMessage('An unexpected error occurred. Please try again.');
     }
   }
 
   const handleServerUpload = async (method, headers, body) => {
+    setErrorMessage('');
+    setSuccessMessage('');
     try {
       await fetch(`${process.env.DOC_API_URL}/upload.php`, {
         method,
@@ -47,7 +52,8 @@ export const UploadRoute: FC = () => {
         redirectToLogin();
       }
       setIsLoading(false);
-      setErrorMessage(err);
+      console.log(err);
+      setErrorMessage('An unexpected error occurred. Please try again.');
     }
   }
 
@@ -58,6 +64,7 @@ export const UploadRoute: FC = () => {
 
     e.preventDefault();
     setIsLoading(true);
+    setErrorMessage('');
     setSuccessMessage('');
 
     const formData = new FormData();
@@ -133,8 +140,6 @@ export const UploadRoute: FC = () => {
         </Button>
       </form>
 
-      {isLoading ? <Loader className={styles.loader} /> : null}
-
       {successMessage ? (
         <div className={styles.messageSuccess}>{successMessage}</div>
       ) : null}
@@ -142,6 +147,8 @@ export const UploadRoute: FC = () => {
       {errorMessage ? (
         <div className={styles.messageError}>{errorMessage}</div>
       ) : null}
+      
+      {isLoading ? <Loader className={styles.loader} /> : null}
     </ContentBox>
   );
 };

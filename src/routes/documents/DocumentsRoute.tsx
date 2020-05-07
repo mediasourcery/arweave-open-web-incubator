@@ -149,7 +149,7 @@ export const DocumentsRoute: FC = () => {
   }, []);
 
   useEffect(() => {
-    if(filesArray){
+    if (filesArray) {
       return;
     }
   }, [filesArray])
@@ -175,8 +175,12 @@ export const DocumentsRoute: FC = () => {
                       <td colSpan={2}>No files located on server.</td>
                     </tr>
                   ) : (
-                      filesArray.map((file, index) => (
-                        <tr className={styles.document} key={file.fileName}>
+                      filesArray.sort(function (a, b) {
+                        if (a.fileName.toLowerCase() < b.fileName.toLowerCase()) { return -1; }
+                        if (a.fileName.toLowerCase() > b.fileName.toLowerCase()) { return 1; }
+                        return 0;
+                      }).map((file, index) => (
+                        <tr className={styles.document} key={`${file.server}-${file.fileName}`}>
                           <td>{file.fileName}</td>
                           <td>
                             <div className={styles.flexContainer}>
