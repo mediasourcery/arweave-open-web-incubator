@@ -13,7 +13,6 @@ import {
   BreadcrumbsContextProvider
 } from './contexts';
 
-
 import { decodeToken } from './utils';
 import { DocumentsRoute, HomeRoute, LogoutRoute, UploadRoute } from './routes';
 import { redirectToLogin } from './utils';
@@ -34,11 +33,22 @@ const App: React.FunctionComponent = () => {
 
   if (query.blockstackSession) {
     localStorage.setItem('blockstack-session', query.blockstackSession);
+  const decodedToken = decodeToken(sessionStorage.getItem('token'));
+
+  if (
+    !decodedToken.capabilities.find(
+      c =>
+        (c.name === 'admin' && c.target === null) ||
+        (c.name === 'use' && c.target === process.env.CLIENT_ID)
+    )
+  ) {
+    window.location.href = `${process.env.AUTH_UI_GATEWAY_URL}/unauthorized`;
+    return;
   }
 
   return (
     <>
-    <Helmet
+      <Helmet
         title="Home"
         titleTemplate={`%s | ${process.env.DOC_UI_UPLOADER_TITLE}`}
       />
