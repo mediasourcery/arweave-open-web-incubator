@@ -33,7 +33,7 @@ const App: React.FunctionComponent = () => {
   }
 
   if (query.blockstackSession) {
-    sessionStorage.setItem('blockstack-session', query.blockstackSession);
+    localStorage.setItem('blockstack-session', query.blockstackSession);
   }
 
   return (

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
-
+import { decodeToken } from '../../utils';
+import { deleteFile, getFile, listFiles } from 'blockstack';
 import {
   ModalLink,
   IconButton,
@@ -16,64 +17,107 @@ import { redirectToLogin } from '../../utils';
 import styles from './DocumentsRoute.scss';
 
 export const DocumentsRoute: FC = () => {
+  const token = decodeToken(sessionStorage.getItem('token'));
   const { setPage } = useContext(PageContext);
   const { setShowModal, setModalError } = useContext(ModalContext);
   const { setBreadcrumbs } = useContext(BreadcrumbsContext);
 
-  const [filesArray, setFilesArray] = useState(null);
+  const [filesArray, setFilesArray] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState('');
 
-  function getDocuments(): void {
-    setIsLoading(true);
+  const getDocuments = async () => {
     setFilesArray([]);
+    setIsLoading(true);
 
     const headers = new Headers();
     headers.delete('Content-Type');
 
-    fetch(`${process.env.DOC_API_URL}/upload.php`, {
-      method: 'get',
-      headers
-    })
-      .then(res => res.json())
-      .then(json => {
-        if (json) {
-          typeof json.moved === 'string' && setResponse(json.moved);
-          setFilesArray(Object.values(json.files));
-          setIsLoading(false);
-        }
+    const files = [];
+
+    try {
+      const response = await fetch(`${process.env.DOC_API_URL}/upload.php`, {
+        method: 'get',
+        headers
       })
-      .catch(err => {
-        if (err.response?.status === 401) {
-          redirectToLogin();
-        }
-        setIsLoading(false);
-        setResponse(err);
-      });
+      const json = await response.json();
+      if (json) {
+        typeof json.moved === 'string' && setResponse(json.moved);
+        Object.values(json.files).map(file => {
+          files.push({ fileName: file, server: 'Internal Server' });
+        })
+      }
+
+      if (token.sub.includes('blockstack')) {
+        await getGaiaServerDocuments(files);
+      }
+
+      setFilesArray(files);
+      setIsLoading(false);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        redirectToLogin();
+      }
+      setIsLoading(false);
+      setResponse(err);
+    }
   }
 
-  function handleDelete(fileName) {
+  const getGaiaServerDocuments = async (files) => {
+    try {
+      await listFiles(file => {
+        files.push({ fileName: file, server: 'GAIA Server' });
+        return true;
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const deleteGaiaServerDocument = async (name: string) => {
+    console.log(name);
+    setModalError('');
+    try {
+      const response = await deleteFile(name);
+      console.log(response);
+      setIsLoading(false);
+      setFilesArray([]);
+      await getDocuments();
+    } catch (err) {
+      setModalError('Failed to delete document.');
+    }
+  }
+
+  const handleDelete = async (fileName) => {
     setModalError('');
     const headers = new Headers();
 
-    fetch(`${process.env.DOC_API_URL}/upload.php`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(fileName)
-    })
-      .then(res => res.json())
-      .then(json => {
-        if (json) {
-          setFilesArray(Object.values(json.files));
-        }
+    const files = [];
+
+    try {
+      const response = await fetch(`${process.env.DOC_API_URL}/upload.php`, {
+        method: 'DELETE',
+        headers,
+        body: JSON.stringify(fileName)
       })
-      .catch(() => {
-        setModalError('Failed to delete document.');
-      });
+      const json = await response.json();
+      console.log(json)
+      if (json) {
+        Object.values(json.files).map(file => {
+          files.push({ fileName: file, server: 'Internal Server' });
+        })
+      }
+      if (token.sub.includes('blockstack')) {
+        await getGaiaServerDocuments(files);
+      }
+      setFilesArray(files);
+    } catch {
+      setModalError('Failed to delete document.');
+    }
   }
 
-  const getModalContent = name => {
+  const getModalContent = (name, server) => {
     return (
       <>
         <div className={styles.modalMessage}>
@@ -86,7 +130,7 @@ export const DocumentsRoute: FC = () => {
           <Button
             className={styles.modalButtonBlue}
             onClick={() => {
-              handleDelete(name);
+              server === 'GAIA server' ? deleteGaiaServerDocument(name) : handleDelete(name);
               setShowModal(false);
             }}
           >
@@ -122,26 +166,38 @@ export const DocumentsRoute: FC = () => {
           filesArray && (
             <div className={styles.response}>
               {response}
-              <div>
-                <h3>Files on server:</h3>
-                {filesArray.length < 1 ? (
-                  <p>No files located on server.</p>
-                ) : (
-                    filesArray.map((file, index) => (
-                      <div className={styles.document} key={file}>
-                        <p>{file}</p>
-                        <ModalLink content={getModalContent(file)}>
-                          <IconButton
-                            className={styles.actionBtn}
-                            disabled={isDeleting}
-                            image="icons/delete-primary.svg"
-                            title="Delete Service"
-                          />
-                        </ModalLink>
-                      </div>
-                    ))
-                  )}
-              </div>
+              <table>
+                <tbody>
+                  <tr>
+                    <th>File name:</th>
+                    <th>Server:</th>
+                  </tr>
+                  {filesArray.length < 1 ? (
+                    <tr>
+                      <td colSpan={2}>No files located on server.</td>
+                    </tr>
+                  ) : (
+                      filesArray.map((file, index) => (
+                        <tr className={styles.document} key={file.fileName}>
+                          <td>{file.fileName}</td>
+                          <td>
+                            <div className={styles.flexContainer}>
+                              {file.server}
+                              <ModalLink content={getModalContent(file.fileName, file.server)}>
+                                <IconButton
+                                  className={styles.actionBtn}
+                                  disabled={isDeleting}
+                                  image="icons/delete-primary.svg"
+                                  title="Delete Service"
+                                />
+                              </ModalLink>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                </tbody>
+              </table>
             </div>
           )
         )}
