@@ -51,7 +51,7 @@ export const UploadRoute: FC = () => {
     }
   }
 
-  function handleSubmit(e: FormEvent): void {
+  const handleSubmit = async (e: FormEvent) => {
     let options = {
       encrypt: false
     }
@@ -66,20 +66,18 @@ export const UploadRoute: FC = () => {
     const headers = new Headers();
     headers.delete('Content-Type');
 
-
-
     if (serverType === 'gaia') {
-      handleGaiaUpload(file.name, file, options);
+      await handleGaiaUpload(file.name, file, options);
     } else {
-      handleServerUpload('post', headers, formData)
+      await handleServerUpload('post', headers, formData)
     }
   }
 
-  function handleFile(e): void {
+  const handleFile = (e) => {
     setFile(e.target.files[0]);
   }
 
-  function handleSelect(e): void {
+  const handleSelect = (e) => {
     setFileType(e.target.value);
   }
 
