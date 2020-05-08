@@ -34,26 +34,25 @@ export const DocumentsRoute: FC = () => {
     const headers = new Headers();
     headers.delete('Content-Type');
 
-
     try {
-      const files = []
+      const files = [];
       const response = await fetch(`${process.env.DOC_API_URL}/upload.php`, {
         method: 'get',
         headers
-      })
+      });
       const json = await response.json();
       if (json) {
         typeof json.moved === 'string' && setResponse(json.moved);
         Object.values(json.files).map(file => {
           files.push({ fileName: file, server: 'Internal Server' });
-        })
+        });
       }
 
       if (token.sub.includes('blockstack')) {
         const gaiaFiles = await getGaiaServerDocuments();
         gaiaFiles.map(gaiaFile => {
           files.push(gaiaFile);
-        })
+        });
       }
 
       setFilesArray(files);
@@ -65,7 +64,7 @@ export const DocumentsRoute: FC = () => {
       setIsLoading(false);
       setResponse(err);
     }
-  }
+  };
 
   const getGaiaServerDocuments = async () => {
     try {
@@ -80,9 +79,8 @@ export const DocumentsRoute: FC = () => {
             fileName: file,
             fileUrl: await getFileUrl(file),
             server: 'GAIA Server'
-          }
-        }
-        )
+          };
+        })
       );
     } catch (err) {
       console.log(err);
@@ -99,9 +97,9 @@ export const DocumentsRoute: FC = () => {
     } catch (err) {
       setModalError('Failed to delete document.');
     }
-  }
+  };
 
-  const handleDelete = async (fileName) => {
+  const handleDelete = async fileName => {
     setFilesArray([]);
     setModalError('');
     const headers = new Headers();
@@ -113,7 +111,7 @@ export const DocumentsRoute: FC = () => {
         method: 'DELETE',
         headers,
         body: JSON.stringify(fileName)
-      })
+      });
       const json = await response.json();
       if (json) {
         await getDocuments();
@@ -121,7 +119,7 @@ export const DocumentsRoute: FC = () => {
     } catch {
       setModalError('Failed to delete document.');
     }
-  }
+  };
 
   const getModalContent = (name, server) => {
     return (
@@ -136,7 +134,9 @@ export const DocumentsRoute: FC = () => {
           <Button
             className={styles.modalButtonBlue}
             onClick={() => {
-              server === 'GAIA Server' ? deleteGaiaServerDocument(name) : handleDelete(name);
+              server === 'GAIA Server'
+                ? deleteGaiaServerDocument(name)
+                : handleDelete(name);
               setShowModal(false);
             }}
           >
@@ -156,17 +156,19 @@ export const DocumentsRoute: FC = () => {
   useEffect(() => {
     setPage('documents');
     getDocuments();
-    setBreadcrumbs([{
-      text: 'Documents',
-      url: 'documents'
-    }])
+    setBreadcrumbs([
+      {
+        text: 'Documents',
+        url: 'documents'
+      }
+    ]);
   }, []);
 
   useEffect(() => {
     if (filesArray) {
       return;
     }
-  }, [filesArray])
+  }, [filesArray]);
 
   return (
     <ContentBox>
@@ -175,51 +177,76 @@ export const DocumentsRoute: FC = () => {
       {isLoading ? (
         <Loader className={styles.loader} />
       ) : (
-          filesArray && (
-            <div className={styles.response}>
-              {response}
-              <table>
-                <tbody>
+        filesArray && (
+          <div className={styles.response}>
+            {response}
+            <table>
+              <tbody>
+                <tr>
+                  <th>File name:</th>
+                  <th>Server:</th>
+                </tr>
+                {filesArray.length < 1 ? (
                   <tr>
-                    <th>File name:</th>
-                    <th>Server:</th>
+                    <td colSpan={2}>No files located on server.</td>
                   </tr>
-                  {filesArray.length < 1 ? (
-                    <tr>
-                      <td colSpan={2}>No files located on server.</td>
-                    </tr>
-                  ) : (
-                      filesArray.sort(function (a, b) {
-                        if (a.fileName.toLowerCase() < b.fileName.toLowerCase()) { return -1; }
-                        if (a.fileName.toLowerCase() > b.fileName.toLowerCase()) { return 1; }
-                        return 0;
-                      }).map((file, index) => (
-                        <tr className={styles.document} key={`${file.server}-${file.fileName}`}>
-                          <td>
-                            {file.server === 'Internal Server' && <a target="_blank" href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}>{file.fileName}</a>}
-                            {file.server !== 'Internal Server' && <a target="_blank" href={file.fileUrl}>{file.fileName}</a>}
-                          </td>
-                          <td>
-                            <div className={styles.flexContainer}>
-                              {file.server}
-                              <ModalLink content={getModalContent(file.fileName, file.server)}>
-                                <IconButton
-                                  className={styles.actionBtn}
-                                  disabled={isDeleting}
-                                  image="icons/delete-primary.svg"
-                                  title="Delete Service"
-                                />
-                              </ModalLink>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                </tbody>
-              </table>
-            </div>
-          )
-        )}
+                ) : (
+                  filesArray
+                    .sort(function(a, b) {
+                      if (a.fileName.toLowerCase() < b.fileName.toLowerCase()) {
+                        return -1;
+                      }
+                      if (a.fileName.toLowerCase() > b.fileName.toLowerCase()) {
+                        return 1;
+                      }
+                      return 0;
+                    })
+                    .map((file, index) => (
+                      <tr
+                        className={styles.document}
+                        key={`${file.server}-${file.fileName}`}
+                      >
+                        <td>
+                          {file.server === 'Internal Server' && (
+                            <a
+                              target="_blank"
+                              href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}
+                            >
+                              {file.fileName}
+                            </a>
+                          )}
+                          {file.server !== 'Internal Server' && (
+                            <a target="_blank" href={file.fileUrl}>
+                              {file.fileName}
+                            </a>
+                          )}
+                        </td>
+                        <td>
+                          <div className={styles.flexContainer}>
+                            {file.server}
+                            <ModalLink
+                              content={getModalContent(
+                                file.fileName,
+                                file.server
+                              )}
+                            >
+                              <IconButton
+                                className={styles.actionBtn}
+                                disabled={isDeleting}
+                                image="icons/delete-primary.svg"
+                                title="Delete Service"
+                              />
+                            </ModalLink>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )
+      )}
     </ContentBox>
   );
 };

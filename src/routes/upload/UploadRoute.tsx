@@ -29,13 +29,13 @@ export const UploadRoute: FC = () => {
       await putFile(fileName, file, options).then(() => {
         setSuccessMessage('Document uploaded successfully!');
         setIsLoading(false);
-      })
+      });
     } catch (err) {
       console.log(err);
       setErrorMessage('An unexpected error occurred. Please try again.');
       setIsLoading(false);
     }
-  }
+  };
 
   const handleServerUpload = async (method, headers, body) => {
     setErrorMessage('');
@@ -45,7 +45,7 @@ export const UploadRoute: FC = () => {
         method,
         headers,
         body
-      })
+      });
       setSuccessMessage('Document uploaded successfully!');
       setIsLoading(false);
     } catch (err) {
@@ -56,12 +56,12 @@ export const UploadRoute: FC = () => {
       console.log(err);
       setErrorMessage('An unexpected error occurred. Please try again.');
     }
-  }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     let options = {
       encrypt: false
-    }
+    };
 
     e.preventDefault();
     setIsLoading(true);
@@ -77,24 +77,26 @@ export const UploadRoute: FC = () => {
     if (serverType === 'gaia') {
       await handleGaiaUpload(file.name, file, options);
     } else {
-      await handleServerUpload('post', headers, formData)
+      await handleServerUpload('post', headers, formData);
     }
-  }
+  };
 
-  const handleFile = (e) => {
+  const handleFile = e => {
     setFile(e.target.files[0]);
-  }
+  };
 
-  const handleSelect = (e) => {
+  const handleSelect = e => {
     setFileType(e.target.value);
-  }
+  };
 
   useEffect(() => {
     setPage('upload');
-    setBreadcrumbs([{
-      text: 'File Upload',
-      url: 'upload'
-    }])
+    setBreadcrumbs([
+      {
+        text: 'File Upload',
+        url: 'upload'
+      }
+    ]);
   }, []);
 
   return (
@@ -113,7 +115,7 @@ export const UploadRoute: FC = () => {
           <option value="document">document</option>
           <option value="pdf">pdf</option>
         </select>
-        {token.sub.includes('blockstack') &&
+        {token.sub.includes('blockstack') && (
           <select
             name="serverType"
             id="serverType"
@@ -124,7 +126,7 @@ export const UploadRoute: FC = () => {
             <option value="internal">Internal Server (default)</option>
             <option value="gaia">GAIA Server</option>
           </select>
-        }
+        )}
         <input
           type="file"
           name="upload-file"
@@ -148,7 +150,7 @@ export const UploadRoute: FC = () => {
       {errorMessage ? (
         <div className={styles.messageError}>{errorMessage}</div>
       ) : null}
-      
+
       {isLoading ? <Loader className={styles.loader} /> : null}
     </ContentBox>
   );
