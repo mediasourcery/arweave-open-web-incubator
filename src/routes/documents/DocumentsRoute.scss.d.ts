@@ -3,6 +3,7 @@ export const form: string;
 export const button: string;
 export const document: string;
 export const errorMessage: string;
+export const flexContainer: string;
 export const loader: string;
 export const modalButtonBlue: string;
 export const modalButtonRed: string;

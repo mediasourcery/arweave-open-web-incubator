@@ -22,6 +22,7 @@ import styles from './App.scss';
 const App: React.FunctionComponent = () => {
   const query: {
     token?: string;
+    blockstackSession?: string;
   } = querystring.parse(location.search.substr(1));
 
   if (query.token) {
@@ -30,6 +31,9 @@ const App: React.FunctionComponent = () => {
     redirectToLogin();
   }
 
+  if (query.blockstackSession) {
+    localStorage.setItem('blockstack-session', query.blockstackSession);
+  }
   const decodedToken = decodeToken(sessionStorage.getItem('token'));
 
   if (

@@ -1,25 +1,71 @@
 import * as React from 'react';
+import * as blockstack from 'blockstack';
+import { putFile } from 'blockstack';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
 
 import { Loader, Button, ContentBox, PageHeader } from '../../components';
 import { BreadcrumbsContext, PageContext } from '../../contexts';
 import { redirectToLogin } from '../../utils';
+import { decodeToken } from '../../utils';
 
 import styles from './UploadRoute.scss';
 
 export const UploadRoute: FC = () => {
+  const token = decodeToken(sessionStorage.getItem('token'));
   const { setPage } = useContext(PageContext);
   const { setBreadcrumbs } = useContext(BreadcrumbsContext);
 
   const [file, setFile] = useState(null);
   const [fileType, setFileType] = useState(null);
+  const [serverType, setServerType] = useState('internal');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  function handleSubmit(e: FormEvent): void {
+  const handleGaiaUpload = async (fileName, file, options) => {
+    setErrorMessage('');
+    setSuccessMessage('');
+    try {
+      await putFile(fileName, file, options).then(() => {
+        setSuccessMessage('Document uploaded successfully!');
+        setIsLoading(false);
+      });
+    } catch (err) {
+      console.log(err);
+      setErrorMessage('An unexpected error occurred. Please try again.');
+      setIsLoading(false);
+    }
+  };
+
+  const handleServerUpload = async (method, headers, body) => {
+    setErrorMessage('');
+    setSuccessMessage('');
+    try {
+      await fetch(`${process.env.DOC_API_URL}/upload.php`, {
+        method,
+        headers,
+        body
+      });
+      setSuccessMessage('Document uploaded successfully!');
+      setIsLoading(false);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        redirectToLogin();
+      }
+      setIsLoading(false);
+      console.log(err);
+      setErrorMessage('An unexpected error occurred. Please try again.');
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    let options = {
+      encrypt: false
+    };
+
     e.preventDefault();
     setIsLoading(true);
+    setErrorMessage('');
     setSuccessMessage('');
 
     const formData = new FormData();
@@ -28,38 +74,29 @@ export const UploadRoute: FC = () => {
     const headers = new Headers();
     headers.delete('Content-Type');
 
-    fetch(`${process.env.DOC_API_URL}/upload.php`, {
-      method: 'post',
-      headers,
-      body: formData
-    })
-      .then(() => {
-        setSuccessMessage('Document uploaded successfully!');
-        setIsLoading(false);
-      })
-      .catch(err => {
-        if (err.response?.status === 401) {
-          redirectToLogin();
-        }
-        setIsLoading(false);
-        setErrorMessage(err);
-      });
-  }
+    if (serverType === 'gaia') {
+      await handleGaiaUpload(file.name, file, options);
+    } else {
+      await handleServerUpload('post', headers, formData);
+    }
+  };
 
-  function handleFile(e): void {
+  const handleFile = e => {
     setFile(e.target.files[0]);
-  }
+  };
 
-  function handleSelect(e): void {
+  const handleSelect = e => {
     setFileType(e.target.value);
-  }
+  };
 
   useEffect(() => {
     setPage('upload');
-    setBreadcrumbs([{
-      text: 'File Upload',
-      url: 'upload'
-    }])
+    setBreadcrumbs([
+      {
+        text: 'File Upload',
+        url: 'upload'
+      }
+    ]);
   }, []);
 
   return (
@@ -78,6 +115,18 @@ export const UploadRoute: FC = () => {
           <option value="document">document</option>
           <option value="pdf">pdf</option>
         </select>
+        {token.sub.includes('blockstack') && (
+          <select
+            name="serverType"
+            id="serverType"
+            className={styles.select}
+            onChange={e => setServerType(e.target.value)}
+          >
+            <option value="">- Choose upload location -</option>
+            <option value="internal">Internal Server (default)</option>
+            <option value="gaia">GAIA Server</option>
+          </select>
+        )}
         <input
           type="file"
           name="upload-file"
@@ -94,8 +143,6 @@ export const UploadRoute: FC = () => {
         </Button>
       </form>
 
-      {isLoading ? <Loader className={styles.loader} /> : null}
-
       {successMessage ? (
         <div className={styles.messageSuccess}>{successMessage}</div>
       ) : null}
@@ -103,6 +150,8 @@ export const UploadRoute: FC = () => {
       {errorMessage ? (
         <div className={styles.messageError}>{errorMessage}</div>
       ) : null}
+
+      {isLoading ? <Loader className={styles.loader} /> : null}
     </ContentBox>
   );
 };

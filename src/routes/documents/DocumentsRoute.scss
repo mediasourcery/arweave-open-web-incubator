@@ -1,7 +1,21 @@
 @import '../../styles/Branding.scss';
 
+table, tbody {
+	width: 100%;
+}
+
+td {
+	padding: 20px 15px;
+}
+
+th {
+	text-align: left;
+	font-size: 1.1rem;
+	margin-bottom: 20px;
+}
+
 .actionBtn {
-	margin: 0 0 0 10px;
+	margin: 0 0 0 auto;
 	&:focus {
 	  outline: none;
 	}
@@ -19,9 +33,6 @@
 
 .document {
 	padding: 20px 15px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
 }
 
 .document:nth-child(even) {
@@ -32,6 +43,13 @@
 	color: red;
 	padding: 15px;
 	font-size: 1rem;
+}
+
+.flexContainer {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .loader {
