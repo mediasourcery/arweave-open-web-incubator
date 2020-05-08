@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
 import { decodeToken } from '../../utils';
-import { deleteFile, getFile, listFiles } from 'blockstack';
+import { deleteFile, getFile, getFileUrl, listFiles } from 'blockstack';
 import {
   ModalLink,
   IconButton,
@@ -34,9 +34,9 @@ export const DocumentsRoute: FC = () => {
     const headers = new Headers();
     headers.delete('Content-Type');
 
-    const files = [];
 
     try {
+      const files = []
       const response = await fetch(`${process.env.DOC_API_URL}/upload.php`, {
         method: 'get',
         headers
@@ -50,7 +50,10 @@ export const DocumentsRoute: FC = () => {
       }
 
       if (token.sub.includes('blockstack')) {
-        await getGaiaServerDocuments(files);
+        const gaiaFiles = await getGaiaServerDocuments();
+        gaiaFiles.map(gaiaFile => {
+          files.push(gaiaFile);
+        })
       }
 
       setFilesArray(files);
@@ -64,16 +67,27 @@ export const DocumentsRoute: FC = () => {
     }
   }
 
-  const getGaiaServerDocuments = async (files) => {
+  const getGaiaServerDocuments = async () => {
     try {
+      const files = [];
       await listFiles(file => {
-        files.push({ fileName: file, server: 'GAIA Server' });
+        files.push(file);
         return true;
       });
+      return await Promise.all(
+        files.map(async file => {
+          return {
+            fileName: file,
+            fileUrl: await getFileUrl(file),
+            server: 'GAIA Server'
+          }
+        }
+        )
+      );
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const deleteGaiaServerDocument = async (name: string) => {
     setModalError('');
@@ -182,8 +196,8 @@ export const DocumentsRoute: FC = () => {
                       }).map((file, index) => (
                         <tr className={styles.document} key={`${file.server}-${file.fileName}`}>
                           <td>
-                            { file.server === 'Internal Server' && <a target="_blank" href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}>{file.fileName}</a> }
-                            { file.server !== 'Internal Server' && file.fileName }
+                            {file.server === 'Internal Server' && <a target="_blank" href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}>{file.fileName}</a>}
+                            {file.server !== 'Internal Server' && <a target="_blank" href={file.fileUrl}>{file.fileName}</a>}
                           </td>
                           <td>
                             <div className={styles.flexContainer}>
