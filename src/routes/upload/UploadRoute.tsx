@@ -33,6 +33,7 @@ export const UploadRoute: FC = () => {
     } catch (err) {
       console.log(err);
       setErrorMessage('An unexpected error occurred. Please try again.');
+      setIsLoading(false);
     }
   }
 
