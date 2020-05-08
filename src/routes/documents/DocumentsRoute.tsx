@@ -181,7 +181,10 @@ export const DocumentsRoute: FC = () => {
                         return 0;
                       }).map((file, index) => (
                         <tr className={styles.document} key={`${file.server}-${file.fileName}`}>
-                          <td>{file.fileName}</td>
+                          <td>
+                            { file.server === 'Internal Server' && <a target="_blank" href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}>{file.fileName}</a> }
+                            { file.server !== 'Internal Server' && file.fileName }
+                          </td>
                           <td>
                             <div className={styles.flexContainer}>
                               {file.server}
