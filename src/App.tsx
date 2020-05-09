@@ -14,7 +14,7 @@ import {
 } from './contexts';
 
 import { decodeToken } from './utils';
-import { DocumentsRoute, HomeRoute, LogoutRoute, UploadRoute } from './routes';
+import { DocumentsRoute, HomeRoute, LogoutRoute, UploadRoute, NotFoundRoute } from './routes';
 import { redirectToLogin } from './utils';
 
 import styles from './App.scss';
@@ -65,6 +65,7 @@ const App: React.FunctionComponent = () => {
               <Route path="/documents" component={DocumentsRoute} exact />
               <Route path="/logout" component={LogoutRoute} exact />
               <Route path="/upload" component={UploadRoute} exact />
+              <Route component={NotFoundRoute} />
             </Switch>
           </div>
         </div>
