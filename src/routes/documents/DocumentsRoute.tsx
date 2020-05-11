@@ -26,6 +26,7 @@ export const DocumentsRoute: FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState('');
+  const [sortType, setSortType] = useState('');
 
   const getDocuments = async () => {
     setFilesArray([]);
@@ -153,6 +154,42 @@ export const DocumentsRoute: FC = () => {
     );
   };
 
+  const getSortMethod = () => {
+    if (sortType === 'server') {
+      return function (a, b) {
+        if (a.server.toLowerCase() < b.server.toLowerCase()) {
+          return -1;
+        }
+        if (a.server.toLowerCase() > b.server.toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      }
+    } else if (sortType === 'type') {
+      return function (a, b) {
+        const splitFileNameA = a.fileName.split('.');
+        const splitFileNameB = b.fileName.split('.');
+        if (splitFileNameA[splitFileNameA.length - 1].toLowerCase() < splitFileNameB[splitFileNameB.length - 1].toLowerCase()) {
+          return -1;
+        }
+        if (splitFileNameA[splitFileNameA.length - 1].toLowerCase() > splitFileNameB[splitFileNameB.length - 1].toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      }
+    } else {
+      return function (a, b) {
+        if (a.fileName.toLowerCase() < b.fileName.toLowerCase()) {
+          return -1;
+        }
+        if (a.fileName.toLowerCase() > b.fileName.toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      }
+    }
+  }
+
   useEffect(() => {
     setPage('documents');
     getDocuments();
@@ -165,88 +202,98 @@ export const DocumentsRoute: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (filesArray) {
+    if (filesArray || sortType) {
       return;
     }
-  }, [filesArray]);
+  }, [filesArray, sortType]);
 
   return (
     <ContentBox>
-      <PageHeader header="Documents"></PageHeader>
+      <PageHeader header="Documents">
+        {filesArray.length >= 1 && (
+          <>
+            <p className={styles.sortTitle}>Sort By:</p>
+            <select
+              className={styles.select}
+              onChange={e => setSortType(e.target.value)}
+            >
+              <option value="">File Name</option>
+              <option value="server">Server</option>
+              <option value="type">File Type</option>
+            </select>
+          </>
+        )}
+      </PageHeader>
 
       {isLoading ? (
         <Loader className={styles.loader} />
       ) : (
-        filesArray && (
-          <div className={styles.response}>
-            {response}
-            <table>
-              <tbody>
-                <tr>
-                  <th>File name:</th>
-                  <th>Server:</th>
-                </tr>
-                {filesArray.length < 1 ? (
+          filesArray && (
+            <div className={styles.response}>
+              {response}
+              <table>
+                <tbody>
                   <tr>
-                    <td colSpan={2}>No files located on server.</td>
+                    <th>File Name:</th>
+                    <th>Server:</th>
+                    <th>File Type:</th>
                   </tr>
-                ) : (
-                  filesArray
-                    .sort(function(a, b) {
-                      if (a.fileName.toLowerCase() < b.fileName.toLowerCase()) {
-                        return -1;
-                      }
-                      if (a.fileName.toLowerCase() > b.fileName.toLowerCase()) {
-                        return 1;
-                      }
-                      return 0;
-                    })
-                    .map((file, index) => (
-                      <tr
-                        className={styles.document}
-                        key={`${file.server}-${file.fileName}`}
-                      >
-                        <td>
-                          {file.server === 'Internal Server' && (
-                            <a
-                              target="_blank"
-                              href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}
-                            >
-                              {file.fileName}
-                            </a>
-                          )}
-                          {file.server !== 'Internal Server' && (
-                            <a target="_blank" href={file.fileUrl}>
-                              {file.fileName}
-                            </a>
-                          )}
-                        </td>
-                        <td>
-                          <div className={styles.flexContainer}>
-                            {file.server}
-                            <ModalLink
-                              content={getModalContent(
-                                file.fileName,
-                                file.server
-                              )}
-                            >
-                              <IconButton
-                                className={styles.actionBtn}
-                                disabled={isDeleting}
-                                image="icons/delete-primary.svg"
-                                title="Delete Service"
-                              />
-                            </ModalLink>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        )
-      )}
+                  {filesArray.length < 1 ? (
+                    <tr>
+                      <td colSpan={2}>No files located on server.</td>
+                    </tr>
+                  ) : (
+                      filesArray
+                        .sort(getSortMethod())
+                        .map((file, index) => (
+                          <tr
+                            className={styles.document}
+                            key={`${file.server}-${file.fileName}`}
+                          >
+                            <td>
+                              <div className={styles.flexContainer}>
+                                {file.server === 'Internal Server' && (
+                                  <a
+                                    target="_blank"
+                                    href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}
+                                  >
+                                    {file.fileName}
+                                  </a>
+                                )}
+                                {file.server !== 'Internal Server' && (
+                                  <a target="_blank" href={file.fileUrl}>
+                                    {file.fileName}
+                                  </a>
+                                )}
+                                <ModalLink
+                                  content={getModalContent(
+                                    file.fileName,
+                                    file.server
+                                  )}
+                                >
+                                  <IconButton
+                                    className={styles.actionBtn}
+                                    disabled={isDeleting}
+                                    image="icons/delete-primary.svg"
+                                    title="Delete Service"
+                                  />
+                                </ModalLink>
+                              </div>
+                            </td>
+                            <td>
+                              <div className={styles.flexContainer}>
+                                {file.server}
+                              </div>
+                            </td>
+                            <td>{file.fileName.split('.')[file.fileName.split('.').length - 1].toUpperCase()}</td>
+                          </tr>
+                        ))
+                    )}
+                </tbody>
+              </table>
+            </div>
+          )
+        )}
     </ContentBox>
   );
 };
