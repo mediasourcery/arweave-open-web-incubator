@@ -121,12 +121,14 @@ export const DocumentsRoute: FC = () => {
     }
   };
 
-  const determineIfThumbnail = (fileName) => {
+  const determineIfThumbnail = fileName => {
     let imageFileTypes = ['jpg', 'jpeg', 'png', 'svg', 'bmp'];
     let isThumbnail;
-    imageFileTypes.includes(fileName.split('.')[fileName.split('.').length - 1]) ? isThumbnail = true : isThumbnail = false;
+    imageFileTypes.includes(fileName.split('.')[fileName.split('.').length - 1])
+      ? (isThumbnail = true)
+      : (isThumbnail = false);
     return isThumbnail;
-  }
+  };
 
   const getModalContent = (name, server) => {
     return (
@@ -184,79 +186,103 @@ export const DocumentsRoute: FC = () => {
       {isLoading ? (
         <Loader className={styles.loader} />
       ) : (
-          filesArray && (
-            <div className={styles.response}>
-              {response}
-              <table>
-                <tbody>
+        filesArray && (
+          <div className={styles.response}>
+            {response}
+            <table>
+              <tbody>
+                <tr>
+                  <th>File name:</th>
+                  <th>Server:</th>
+                </tr>
+                {filesArray.length < 1 ? (
                   <tr>
-                    <th>File name:</th>
-                    <th>Server:</th>
+                    <td colSpan={2}>No files located on server.</td>
                   </tr>
-                  {filesArray.length < 1 ? (
-                    <tr>
-                      <td colSpan={2}>No files located on server.</td>
-                    </tr>
-                  ) : (
-                      filesArray
-                        .sort(function (a, b) {
-                          if (a.fileName.toLowerCase() < b.fileName.toLowerCase()) {
-                            return -1;
-                          }
-                          if (a.fileName.toLowerCase() > b.fileName.toLowerCase()) {
-                            return 1;
-                          }
-                          return 0;
-                        })
-                        .map((file, index) => (
-                          <tr
-                            className={styles.document}
-                            key={`${file.server}-${file.fileName}`}
-                          >
-                            <td>
-                              {file.server === 'Internal Server' && (
-                                <a
-                                  className={styles.documentLink}
-                                  target="_blank"
-                                  href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}
-                                >
-                                  {determineIfThumbnail(file.fileName) ? <img className={styles.thumbnail} src={`${process.env.DOC_API_URL}/uploads/${file.fileName}`} /> : <img className={styles.documentIcon} src={`${process.env.PUBLIC_URL}icons/document.svg`} />}
-                                  {file.fileName}
-                                </a>
+                ) : (
+                  filesArray
+                    .sort(function(a, b) {
+                      if (a.fileName.toLowerCase() < b.fileName.toLowerCase()) {
+                        return -1;
+                      }
+                      if (a.fileName.toLowerCase() > b.fileName.toLowerCase()) {
+                        return 1;
+                      }
+                      return 0;
+                    })
+                    .map((file, index) => (
+                      <tr
+                        className={styles.document}
+                        key={`${file.server}-${file.fileName}`}
+                      >
+                        <td>
+                          {file.server === 'Internal Server' && (
+                            <a
+                              className={styles.documentLink}
+                              target="_blank"
+                              href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}
+                            >
+                              {determineIfThumbnail(file.fileName) ? (
+                                <img
+                                  className={styles.thumbnail}
+                                  src={`${process.env.DOC_API_URL}/uploads/${file.fileName}`}
+                                />
+                              ) : (
+                                <img
+                                  className={styles.documentIcon}
+                                  src={`${process.env.PUBLIC_URL}icons/document.svg`}
+                                />
                               )}
-                              {file.server !== 'Internal Server' && (
-                                <a className={styles.documentLink} target="_blank" href={file.fileUrl}>
-                                  {determineIfThumbnail(file.fileName) ? <img className={styles.thumbnail} src={file.fileUrl} /> : <img className={styles.documentIcon} src={`${process.env.PUBLIC_URL}icons/document.svg`} />}
-                                  {file.fileName}
-                                </a>
+                              {file.fileName}
+                            </a>
+                          )}
+                          {file.server !== 'Internal Server' && (
+                            <a
+                              className={styles.documentLink}
+                              target="_blank"
+                              href={file.fileUrl}
+                            >
+                              {determineIfThumbnail(file.fileName) ? (
+                                <img
+                                  className={styles.thumbnail}
+                                  src={file.fileUrl}
+                                />
+                              ) : (
+                                <img
+                                  className={styles.documentIcon}
+                                  src={`${process.env.PUBLIC_URL}icons/document.svg`}
+                                />
                               )}
-                            </td>
-                            <td>
-                              <div className={styles.flexContainer}>
-                                {file.server}
-                                <ModalLink
-                                  content={getModalContent(
-                                    file.fileName,
-                                    file.server
-                                  )}
-                                >
-                                  <IconButton
-                                    className={styles.actionBtn}
-                                    disabled={isDeleting}
-                                    image="icons/delete-primary.svg"
-                                    title="Delete Service"
-                                  />
-                                </ModalLink>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                    )}
-                </tbody>
-              </table>
-            </div>
-          )
-        )}
+                              {file.fileName}
+                            </a>
+                          )}
+                        </td>
+                        <td>
+                          <div className={styles.flexContainer}>
+                            {file.server}
+                            <ModalLink
+                              content={getModalContent(
+                                file.fileName,
+                                file.server
+                              )}
+                            >
+                              <IconButton
+                                className={styles.actionBtn}
+                                disabled={isDeleting}
+                                image="icons/delete-primary.svg"
+                                title="Delete Service"
+                              />
+                            </ModalLink>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )
+      )}
     </ContentBox>
   );
 };
