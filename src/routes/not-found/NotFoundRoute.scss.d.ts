@@ -1,3 +1,4 @@
+export const homeLink: string;
 export const notice: string;
 export const subtitle: string;
 export const title: string;

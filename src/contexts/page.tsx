@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Dispatch, SetStateAction, createContext, useState } from 'react';
 
 interface IProps {
-  page: '' | 'upload';
+  page: '' | 'upload' | '404';
   setPage: Dispatch<SetStateAction<string>>;
 }
 

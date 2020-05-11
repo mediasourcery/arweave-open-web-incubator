@@ -1,12 +1,8 @@
 import * as React from 'react';
-import * as blockstack from 'blockstack';
-import { putFile } from 'blockstack';
-import { FC, FormEvent, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect } from 'react';
 
-import { Loader, Button, ContentBox, PageHeader } from '../../components';
+import { ContentBox } from '../../components';
 import { BreadcrumbsContext, PageContext } from '../../contexts';
-import { redirectToLogin } from '../../utils';
-import { decodeToken } from '../../utils';
 
 import styles from './NotFoundRoute.scss';
 
@@ -15,7 +11,7 @@ export const NotFoundRoute: FC = () => {
   const { setBreadcrumbs } = useContext(BreadcrumbsContext);
 
   useEffect(() => {
-    setPage('');
+    setPage('404');
     setBreadcrumbs([
       {
         text: '',
@@ -31,6 +27,7 @@ export const NotFoundRoute: FC = () => {
       <p className={styles.notice}>
         The page you are looking for does not exist.
         </p>
+      <a href='/'><p className={styles.homeLink}>Return Home</p></a>
     </ContentBox>
   );
 };

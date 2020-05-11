@@ -1,8 +1,15 @@
 @import '../../styles/Branding.scss';
 
-.notice {
-	margin-bottom: 30px;
+.homeLink {
+	margin-bottom: 20px;
+	margin-top: 5px;
 	text-align: center;
+	width: 100%;
+}
+
+.notice {
+	text-align: center;
+	margin-bottom: 0;
 }
 
 .subtitle {

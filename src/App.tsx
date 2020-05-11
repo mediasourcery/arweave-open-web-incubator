@@ -1,5 +1,6 @@
 import * as querystring from 'querystring';
 import * as React from 'react';
+import { useContext } from 'react';
 import { render } from 'react-dom';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -8,6 +9,7 @@ import { Header, Menu, Modal, Popover, Breadcrumbs } from './components';
 import {
   MenuContextProvider,
   ModalContextProvider,
+  PageContext,
   PageContextProvider,
   PopoverContextProvider,
   BreadcrumbsContextProvider
@@ -20,6 +22,7 @@ import { redirectToLogin } from './utils';
 import styles from './App.scss';
 
 const App: React.FunctionComponent = () => {
+  const { page } = React.useContext(PageContext)
   const query: {
     token?: string;
     blockstackSession?: string;
@@ -57,9 +60,8 @@ const App: React.FunctionComponent = () => {
         <Header />
         <div className={styles.container}>
           <Menu />
-          <div className={styles.content}>
+          <div className={page === '404' ? styles.contentNotFound : styles.content}>
             <Breadcrumbs />
-
             <Switch>
               <Route path="/" component={HomeRoute} exact />
               <Route path="/documents" component={DocumentsRoute} exact />
