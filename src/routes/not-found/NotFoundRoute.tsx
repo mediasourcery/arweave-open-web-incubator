@@ -1,26 +1,11 @@
 import * as React from 'react';
-import { FC, useContext, useEffect } from 'react';
+import { FC } from 'react';
 
 import { ContentBox } from '../../components';
-import { BreadcrumbsContext, PageContext } from '../../contexts';
 
 import styles from './NotFoundRoute.scss';
 
-export const NotFoundRoute: FC = () => {
-  const { setPage } = useContext(PageContext);
-  const { setBreadcrumbs } = useContext(BreadcrumbsContext);
-
-  useEffect(() => {
-    setPage('404');
-    setBreadcrumbs([
-      {
-        text: '',
-        url: ''
-      }
-    ]);
-  }, []);
-
-  return (
+export const NotFoundRoute: FC = () => (
     <ContentBox>
       <h1 className={styles.title}>404</h1>
       <h2 className={styles.subtitle}>Page Not Found</h2>
@@ -30,4 +15,3 @@ export const NotFoundRoute: FC = () => {
       <a href='/'><p className={styles.homeLink}>Return Home</p></a>
     </ContentBox>
   );
-};
