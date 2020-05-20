@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { FC, FormEvent, useContext, useEffect, useState } from 'react';
+import * as path from 'path';
+import { FC, useContext, useEffect, useState } from 'react';
 import { decodeToken } from '../../utils';
-import { deleteFile, getFile, getFileUrl, listFiles } from 'blockstack';
+import { deleteFile, getFileUrl, listFiles } from 'blockstack';
 import {
   ModalLink,
   IconButton,
@@ -44,7 +45,11 @@ export const DocumentsRoute: FC = () => {
       if (json) {
         typeof json.moved === 'string' && setResponse(json.moved);
         Object.values(json.files).map(file => {
-          files.push({ fileName: file, server: 'Internal Server' });
+          files.push({
+            fileName: file,
+            server: 'Internal Server',
+            hasThumbnail: determineIfThumbnail(file)
+          });
         });
       }
 
@@ -78,7 +83,8 @@ export const DocumentsRoute: FC = () => {
           return {
             fileName: file,
             fileUrl: await getFileUrl(file),
-            server: 'GAIA Server'
+            server: 'GAIA Server',
+            hasThumbnail: determineIfThumbnail(file)
           };
         })
       );
@@ -90,7 +96,7 @@ export const DocumentsRoute: FC = () => {
   const deleteGaiaServerDocument = async (name: string) => {
     setModalError('');
     try {
-      const response = await deleteFile(name);
+      await deleteFile(name);
       setIsLoading(false);
       setFilesArray([]);
       await getDocuments();
@@ -103,8 +109,6 @@ export const DocumentsRoute: FC = () => {
     setFilesArray([]);
     setModalError('');
     const headers = new Headers();
-
-    const files = [];
 
     try {
       const response = await fetch(`${process.env.DOC_API_URL}/upload.php`, {
@@ -122,12 +126,8 @@ export const DocumentsRoute: FC = () => {
   };
 
   const determineIfThumbnail = fileName => {
-    let imageFileTypes = ['jpg', 'jpeg', 'png', 'svg', 'bmp'];
-    let isThumbnail;
-    imageFileTypes.includes(fileName.split('.')[fileName.split('.').length - 1])
-      ? (isThumbnail = true)
-      : (isThumbnail = false);
-    return isThumbnail;
+    const imageFileTypes = ['.jpg', '.jpeg', '.png', '.svg', '.bmp'];
+    return imageFileTypes.includes(path.extname(fileName));
   };
 
   const getModalContent = (name, server) => {
@@ -222,7 +222,7 @@ export const DocumentsRoute: FC = () => {
                               target="_blank"
                               href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}
                             >
-                              {determineIfThumbnail(file.fileName) ? (
+                              {file.hasThumbnail ? (
                                 <img
                                   className={styles.thumbnail}
                                   src={`${process.env.DOC_API_URL}/uploads/${file.fileName}`}
@@ -242,7 +242,7 @@ export const DocumentsRoute: FC = () => {
                               target="_blank"
                               href={file.fileUrl}
                             >
-                              {determineIfThumbnail(file.fileName) ? (
+                              {file.hasThumbnail ? (
                                 <img
                                   className={styles.thumbnail}
                                   src={file.fileUrl}
