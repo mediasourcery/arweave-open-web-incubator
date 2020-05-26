@@ -1,6 +1,5 @@
 import * as querystring from 'querystring';
 import * as React from 'react';
-import { useContext } from 'react';
 import { render } from 'react-dom';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -16,13 +15,12 @@ import {
 } from './contexts';
 
 import { decodeToken } from './utils';
-import { DocumentsRoute, HomeRoute, LogoutRoute, UploadRoute, NotFoundRoute } from './routes';
+import { DocumentsRoute, HomeRoute, LogoutRoute, UploadRoute } from './routes';
 import { redirectToLogin } from './utils';
 
 import styles from './App.scss';
 
 const App: React.FunctionComponent = () => {
-  const { page } = React.useContext(PageContext)
   const query: {
     token?: string;
     blockstackSession?: string;
@@ -60,14 +58,13 @@ const App: React.FunctionComponent = () => {
         <Header />
         <div className={styles.container}>
           <Menu />
-          <div className={page === '404' ? styles.contentNotFound : styles.content}>
+          <div className={styles.content}>
             <Breadcrumbs />
             <Switch>
               <Route path="/" component={HomeRoute} exact />
               <Route path="/documents" component={DocumentsRoute} exact />
               <Route path="/logout" component={LogoutRoute} exact />
               <Route path="/upload" component={UploadRoute} exact />
-              <Route component={NotFoundRoute} />
             </Switch>
           </div>
         </div>

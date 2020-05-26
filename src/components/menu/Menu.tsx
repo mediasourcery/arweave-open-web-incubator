@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import * as React from 'react';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 
 import { MenuLink } from '../';
 
@@ -25,10 +25,6 @@ const mainNavLinks: {
 export const Menu: React.FunctionComponent = () => {
   const { showMenu, setShowMenu } = useContext(MenuContext);
   const { page } = useContext(PageContext);
-
-  if( page === '404' ) {
-    return null
-  }
 
   return (
     <>

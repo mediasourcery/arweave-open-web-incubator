@@ -5,14 +5,13 @@ import { Link } from 'react-router-dom';
 
 import { Icon, IconButton } from '..';
 
-import { MenuContext, PageContext, PopoverContext } from '../../contexts';
+import { MenuContext, PopoverContext } from '../../contexts';
 import { decodeToken } from '../../utils';
 
 import styles from './Header.scss';
 
 export const Header: React.FunctionComponent = () => {
   const token = decodeToken(sessionStorage.getItem('token'));
-  const { page } = useContext(PageContext);
   const { showMenu, setShowMenu } = useContext(MenuContext);
   const { setPopoverItems, showPopover, setShowPopover } = useContext(
     PopoverContext
@@ -22,10 +21,6 @@ export const Header: React.FunctionComponent = () => {
     identifier => identifier.type === 'email'
   );
   const email = emailIdentifier ? emailIdentifier.value : '';
-
-  if( page === '404' ) {
-    return null
-  }
 
   return (
     <header className={styles.header}>
