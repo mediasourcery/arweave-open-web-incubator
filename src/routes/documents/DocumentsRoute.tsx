@@ -223,9 +223,9 @@ export const DocumentsRoute: FC = () => {
                               href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}
                             >
                               {file.hasThumbnail ? (
-                                <img
+                                <div
                                   className={styles.thumbnail}
-                                  src={`${process.env.DOC_API_URL}/uploads/${file.fileName}`}
+                                  style={{ backgroundImage: `url(${process.env.DOC_API_URL}/uploads/${file.fileName}` }}
                                 />
                               ) : (
                                 <img
@@ -243,9 +243,9 @@ export const DocumentsRoute: FC = () => {
                               href={file.fileUrl}
                             >
                               {file.hasThumbnail ? (
-                                <img
+                                <div
                                   className={styles.thumbnail}
-                                  src={file.fileUrl}
+                                  style={{ backgroundImage: `url(${file.fileUrl}` }}
                                 />
                               ) : (
                                 <img
