@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { FC, FormEvent, useContext, useEffect, useState } from 'react';
+import * as path from 'path';
+import { FC, useContext, useEffect, useState } from 'react';
 import { decodeToken } from '../../utils';
-import { deleteFile, getFile, getFileUrl, listFiles } from 'blockstack';
+import { deleteFile, getFileUrl, listFiles } from 'blockstack';
 import {
   ModalLink,
   Icon,
@@ -51,7 +52,11 @@ export const DocumentsRoute: FC = () => {
       if (json) {
         typeof json.moved === 'string' && setResponse(json.moved);
         Object.values(json.files).map(file => {
-          files.push({ fileName: file, server: 'Internal Server' });
+          files.push({
+            fileName: file,
+            server: 'Internal Server',
+            hasThumbnail: determineIfThumbnail(file)
+          });
         });
       }
 
@@ -85,7 +90,8 @@ export const DocumentsRoute: FC = () => {
           return {
             fileName: file,
             fileUrl: await getFileUrl(file),
-            server: 'GAIA Server'
+            server: 'GAIA Server',
+            hasThumbnail: determineIfThumbnail(file)
           };
         })
       );
@@ -97,7 +103,7 @@ export const DocumentsRoute: FC = () => {
   const deleteGaiaServerDocument = async (name: string) => {
     setModalError('');
     try {
-      const response = await deleteFile(name);
+      await deleteFile(name);
       setIsLoading(false);
       setFilesArray([]);
       await getDocuments();
@@ -110,8 +116,6 @@ export const DocumentsRoute: FC = () => {
     setFilesArray([]);
     setModalError('');
     const headers = new Headers();
-
-    const files = [];
 
     try {
       const response = await fetch(`${process.env.DOC_API_URL}/upload.php`, {
@@ -126,6 +130,11 @@ export const DocumentsRoute: FC = () => {
     } catch {
       setModalError('Failed to delete document.');
     }
+  };
+
+  const determineIfThumbnail = fileName => {
+    const imageFileTypes = ['.jpg', '.jpeg', '.png', '.svg', '.bmp'];
+    return imageFileTypes.includes(path.extname(fileName));
   };
 
   const getModalContent = (name, server) => {
@@ -289,14 +298,41 @@ export const DocumentsRoute: FC = () => {
                         <div className={styles.flexContainer}>
                           {file.server === 'Internal Server' && (
                             <a
+                              className={styles.documentLink}
                               target="_blank"
                               href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}
                             >
+                              {file.hasThumbnail ? (
+                                <div
+                                  className={styles.thumbnail}
+                                  style={{ backgroundImage: `url(${process.env.DOC_API_URL}/uploads/${file.fileName}` }}
+                                />
+                              ) : (
+                                <img
+                                  className={styles.documentIcon}
+                                  src={`${process.env.PUBLIC_URL}icons/document.svg`}
+                                />
+                              )}
                               {file.fileName}
                             </a>
                           )}
                           {file.server !== 'Internal Server' && (
-                            <a target="_blank" href={file.fileUrl}>
+                            <a
+                              className={styles.documentLink}
+                              target="_blank"
+                              href={file.fileUrl}
+                            >
+                              {file.hasThumbnail ? (
+                                <div
+                                  className={styles.thumbnail}
+                                  style={{ backgroundImage: `url(${file.fileUrl}` }}
+                                />
+                              ) : (
+                                <img
+                                  className={styles.documentIcon}
+                                  src={`${process.env.PUBLIC_URL}icons/document.svg`}
+                                />
+                              )}
                               {file.fileName}
                             </a>
                           )}
