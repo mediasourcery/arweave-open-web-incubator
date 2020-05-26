@@ -12,7 +12,6 @@ import styles from './Header.scss';
 
 export const Header: React.FunctionComponent = () => {
   const token = decodeToken(sessionStorage.getItem('token'));
-
   const { showMenu, setShowMenu } = useContext(MenuContext);
   const { setPopoverItems, showPopover, setShowPopover } = useContext(
     PopoverContext

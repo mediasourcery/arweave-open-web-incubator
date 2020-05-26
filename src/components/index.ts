@@ -6,6 +6,7 @@ export * from './file-uploader/FileUploader';
 export * from './header/Header';
 export * from './icon/Icon';
 export * from './icon-button/IconButton';
+export * from './interaction/Interaction';
 export * from './loader/Loader';
 export * from './menu/Menu';
 export * from './menuLink/MenuLink';

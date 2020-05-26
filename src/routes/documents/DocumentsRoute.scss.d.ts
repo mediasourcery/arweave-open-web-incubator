@@ -10,6 +10,8 @@ export const modalButtonRed: string;
 export const modalButtonContainer: string;
 export const modalMessage: string;
 export const select: string;
+export const sortTitle: string;
 export const fileInput: string;
 export const response: string;
+export const sortIcon: string;
 export const spin: string;

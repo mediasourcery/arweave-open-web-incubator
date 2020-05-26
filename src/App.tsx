@@ -59,7 +59,6 @@ const App: React.FunctionComponent = () => {
           <Menu />
           <div className={styles.content}>
             <Breadcrumbs />
-
             <Switch>
               <Route path="/" component={HomeRoute} exact />
               <Route path="/documents" component={DocumentsRoute} exact />

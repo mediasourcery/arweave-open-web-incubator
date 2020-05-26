@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import * as React from 'react';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 
 import { MenuLink } from '../';
 
