@@ -23,22 +23,11 @@ body {
   display: flex;
 }
 
-.content, .contentNotFound {
+.content {
   background-color: $light-gray;
   flex-grow: 1;
   height: calc(100vh - 63px);
   overflow-y: auto;
-}
-
-.contentNotFound {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.contentNotFound * {
-  border-radius: 5px;
 }
 
 .menuList {

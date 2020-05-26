@@ -8,7 +8,6 @@ import { Header, Menu, Modal, Popover, Breadcrumbs } from './components';
 import {
   MenuContextProvider,
   ModalContextProvider,
-  PageContext,
   PageContextProvider,
   PopoverContextProvider,
   BreadcrumbsContextProvider
