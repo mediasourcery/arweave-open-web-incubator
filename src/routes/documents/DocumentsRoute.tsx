@@ -183,10 +183,14 @@ export const DocumentsRoute: FC = () => {
       if (orderBy === 'fileType') {
         const splitFileNameA = a.fileName.split('.');
         const splitFileNameB = b.fileName.split('.');
-        if (splitFileNameA[splitFileNameA.length - 1].toLowerCase() < splitFileNameB[splitFileNameB.length - 1].toLowerCase()) {
+        if (
+          splitFileNameA[splitFileNameA.length - 1].toLowerCase() <
+          splitFileNameB[splitFileNameB.length - 1].toLowerCase()
+        ) {
           return sorting === 'desc' ? 1 : -1;
         } else if (
-          splitFileNameA[splitFileNameA.length - 1].toLowerCase() > splitFileNameB[splitFileNameB.length - 1].toLowerCase()
+          splitFileNameA[splitFileNameA.length - 1].toLowerCase() >
+          splitFileNameB[splitFileNameB.length - 1].toLowerCase()
         ) {
           return sorting === 'desc' ? -1 : 1;
         }
@@ -194,9 +198,7 @@ export const DocumentsRoute: FC = () => {
       if (orderBy === 'server') {
         if (a.server < b.server) {
           return sorting === 'desc' ? 1 : -1;
-        } else if (
-          a.server > b.server
-        ) {
+        } else if (a.server > b.server) {
           return sorting === 'desc' ? -1 : 1;
         }
       }
@@ -205,9 +207,7 @@ export const DocumentsRoute: FC = () => {
     setFilesArray(newFilesArray);
   }, [orderBy, sorting, isLoading]);
 
-  const sortTable = (
-    newOrderBy: 'fileName' | 'fileType' | 'server'
-  ) => {
+  const sortTable = (newOrderBy: 'fileName' | 'fileType' | 'server') => {
     setOrderBy(newOrderBy);
     if (orderBy === newOrderBy) {
       setSorting(sorting === 'asc' ? 'desc' : 'asc');
@@ -220,115 +220,119 @@ export const DocumentsRoute: FC = () => {
       {isLoading ? (
         <Loader className={styles.loader} />
       ) : (
-          filesArray && (
-            <div className={styles.response}>
-              {response}
-              <table>
-                <tbody>
+        filesArray && (
+          <div className={styles.response}>
+            {response}
+            <table>
+              <tbody>
+                <tr>
+                  <th>
+                    <Interaction onClick={() => sortTable('fileName')}>
+                      File Name
+                      <Icon
+                        image={
+                          orderBy === 'fileName' && sorting === 'asc'
+                            ? 'icons/sort-asc.svg'
+                            : orderBy === 'fileName' && sorting === 'desc'
+                            ? 'icons/sort-desc.svg'
+                            : 'icons/sort.svg'
+                        }
+                        size={14}
+                        className={styles.sortIcon}
+                      />
+                    </Interaction>
+                  </th>
+                  <th>
+                    <Interaction onClick={() => sortTable('server')}>
+                      Server
+                      <Icon
+                        image={
+                          orderBy === 'server' && sorting === 'asc'
+                            ? 'icons/sort-asc.svg'
+                            : orderBy === 'server' && sorting === 'desc'
+                            ? 'icons/sort-desc.svg'
+                            : 'icons/sort.svg'
+                        }
+                        size={14}
+                        className={styles.sortIcon}
+                      />
+                    </Interaction>
+                  </th>
+                  <th>
+                    <Interaction onClick={() => sortTable('fileType')}>
+                      File Type
+                      <Icon
+                        image={
+                          orderBy === 'fileType' && sorting === 'asc'
+                            ? 'icons/sort-asc.svg'
+                            : orderBy === 'fileType' && sorting === 'desc'
+                            ? 'icons/sort-desc.svg'
+                            : 'icons/sort.svg'
+                        }
+                        size={14}
+                        className={styles.sortIcon}
+                      />
+                    </Interaction>
+                  </th>
+                </tr>
+                {filesArray.length < 1 ? (
                   <tr>
-                    <th>
-                      <Interaction onClick={() => sortTable('fileName')}>
-                        File Name
-                        <Icon
-                          image={
-                            orderBy === 'fileName' && sorting === 'asc'
-                              ? 'icons/sort-asc.svg'
-                              : orderBy === 'fileName' && sorting === 'desc'
-                                ? 'icons/sort-desc.svg'
-                                : 'icons/sort.svg'
-                          }
-                          size={14}
-                          className={styles.sortIcon}
-                        />
-                      </Interaction>
-                    </th>
-                    <th>
-                      <Interaction onClick={() => sortTable('server')}>
-                        Server
-                        <Icon
-                          image={
-                            orderBy === 'server' && sorting === 'asc'
-                              ? 'icons/sort-asc.svg'
-                              : orderBy === 'server' && sorting === 'desc'
-                                ? 'icons/sort-desc.svg'
-                                : 'icons/sort.svg'
-                          }
-                          size={14}
-                          className={styles.sortIcon}
-                        />
-                      </Interaction>
-                    </th>
-                    <th>
-                      <Interaction onClick={() => sortTable('fileType')}>
-                        File Type
-                        <Icon
-                          image={
-                            orderBy === 'fileType' && sorting === 'asc'
-                              ? 'icons/sort-asc.svg'
-                              : orderBy === 'fileType' && sorting === 'desc'
-                                ? 'icons/sort-desc.svg'
-                                : 'icons/sort.svg'
-                          }
-                          size={14}
-                          className={styles.sortIcon}
-                        />
-                      </Interaction>
-                    </th>
+                    <td colSpan={3}>No files located on server.</td>
                   </tr>
-                  {filesArray.length < 1 ? (
-                    <tr>
-                      <td colSpan={3}>No files located on server.</td>
+                ) : (
+                  filesArray.map((file, index) => (
+                    <tr
+                      className={styles.document}
+                      key={`${file.server}-${file.fileName}`}
+                    >
+                      <td>
+                        <div className={styles.flexContainer}>
+                          {file.server === 'Internal Server' && (
+                            <a
+                              target="_blank"
+                              href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}
+                            >
+                              {file.fileName}
+                            </a>
+                          )}
+                          {file.server !== 'Internal Server' && (
+                            <a target="_blank" href={file.fileUrl}>
+                              {file.fileName}
+                            </a>
+                          )}
+                          <ModalLink
+                            content={getModalContent(
+                              file.fileName,
+                              file.server
+                            )}
+                          >
+                            <IconButton
+                              className={styles.actionBtn}
+                              disabled={isDeleting}
+                              image="icons/delete-primary.svg"
+                              title="Delete Service"
+                            />
+                          </ModalLink>
+                        </div>
+                      </td>
+                      <td>
+                        <div className={styles.flexContainer}>
+                          {file.server}
+                        </div>
+                      </td>
+                      <td>
+                        {file.fileName
+                          .split('.')
+                          [file.fileName.split('.').length - 1].toUpperCase()}
+                      </td>
                     </tr>
-                  ) : (
-                      filesArray.map((file, index) => (
-                        <tr
-                          className={styles.document}
-                          key={`${file.server}-${file.fileName}`}
-                        >
-                          <td>
-                            <div className={styles.flexContainer}>
-                              {file.server === 'Internal Server' && (
-                                <a
-                                  target="_blank"
-                                  href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}
-                                >
-                                  {file.fileName}
-                                </a>
-                              )}
-                              {file.server !== 'Internal Server' && (
-                                <a target="_blank" href={file.fileUrl}>
-                                  {file.fileName}
-                                </a>
-                              )}
-                              <ModalLink
-                                content={getModalContent(
-                                  file.fileName,
-                                  file.server
-                                )}
-                              >
-                                <IconButton
-                                  className={styles.actionBtn}
-                                  disabled={isDeleting}
-                                  image="icons/delete-primary.svg"
-                                  title="Delete Service"
-                                />
-                              </ModalLink>
-                            </div>
-                          </td>
-                          <td>
-                            <div className={styles.flexContainer}>
-                              {file.server}
-                            </div>
-                          </td>
-                          <td>{file.fileName.split('.')[file.fileName.split('.').length - 1].toUpperCase()}</td>
-                        </tr>
-                      ))
-                    )}
-                </tbody>
-              </table>
-            </div>
-          )
-        )}
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )
+      )}
     </ContentBox>
   );
 };
