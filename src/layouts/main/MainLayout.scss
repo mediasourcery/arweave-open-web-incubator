@@ -1,0 +1,36 @@
+@import '../../styles/Branding.scss';
+
+.container {
+  display: flex;
+}
+
+.content {
+  background-color: $light-gray;
+  flex-grow: 1;
+  height: calc(100vh - 63px);
+  overflow-y: auto;
+}
+
+.contentFill { 
+  background-color: white;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main {
+  background-color: $light-gray;
+}
+
+.menuList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 250px;
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+}

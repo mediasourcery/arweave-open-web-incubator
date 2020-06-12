@@ -1,10 +1,13 @@
 import * as querystring from 'querystring';
 import * as React from 'react';
+import { FC } from 'react';
 import { render } from 'react-dom';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import './App.scss';
 
-import { Header, Menu, Modal, Popover, Breadcrumbs } from './components';
+import { Modal, Popover } from './components';
+import { MainLayout } from './layouts/main/MainLayout';
 import {
   MenuContextProvider,
   ModalContextProvider,
@@ -14,7 +17,7 @@ import {
 } from './contexts';
 
 import { decodeToken } from './utils';
-import { DocumentsRoute, HomeRoute, LogoutRoute, UploadRoute } from './routes';
+import { DocumentsRoute, Error404Route, HomeRoute, LogoutRoute, UploadRoute } from './routes';
 import { redirectToLogin } from './utils';
 
 import styles from './App.scss';
@@ -47,6 +50,34 @@ const App: React.FunctionComponent = () => {
     return;
   }
 
+  const routes: {
+    [path: string]: {
+      component: FC;
+      layout?: FC;
+      isPublic?: boolean;
+    };
+  } = {
+    '/': {
+      component: HomeRoute,
+      layout: MainLayout
+    },
+    '/documents': {
+      component: DocumentsRoute,
+      layout: MainLayout
+    },
+    '/logout': {
+      component: LogoutRoute,
+      layout: MainLayout
+    },
+    '/upload': {
+      component: UploadRoute,
+      layout: MainLayout
+    },
+    '*': {
+      component: Error404Route
+    }
+  };
+
   return (
     <>
       <Helmet
@@ -54,19 +85,19 @@ const App: React.FunctionComponent = () => {
         titleTemplate={`%s | ${process.env.DOC_UI_UPLOADER_TITLE}`}
       />
       <Router basename={process.env.PUBLIC_URL}>
-        <Header />
-        <div className={styles.container}>
-          <Menu />
-          <div className={styles.content}>
-            <Breadcrumbs />
-            <Switch>
-              <Route path="/" component={HomeRoute} exact />
-              <Route path="/documents" component={DocumentsRoute} exact />
-              <Route path="/logout" component={LogoutRoute} exact />
-              <Route path="/upload" component={UploadRoute} exact />
-            </Switch>
-          </div>
-        </div>
+        <Switch>
+          {Object.entries(routes).map(([path, route]) => (
+            <Route exact path={path} key={path}>
+              {route.layout ? (
+                <route.layout>
+                  <route.component />
+                </route.layout>
+              ) : (
+                  <route.component />
+                )}
+            </Route>
+          ))}
+        </Switch>
         <Popover />
       </Router>
       <Modal />
