@@ -36,7 +36,6 @@ export const DocumentsRoute: FC = () => {
   const [sorting, setSorting] = useState<'asc' | 'desc'>('asc');
 
   const getDocuments = async () => {
-    setFilesArray([]);
     setIsLoading(true);
 
     const headers = new Headers();
@@ -105,15 +104,14 @@ export const DocumentsRoute: FC = () => {
     try {
       await deleteFile(name);
       setIsLoading(false);
-      setFilesArray([]);
       await getDocuments();
+      setShowModal(false);
     } catch (err) {
       setModalError('Failed to delete document.');
     }
   };
 
   const handleDelete = async fileName => {
-    setFilesArray([]);
     setModalError('');
     const headers = new Headers();
 
@@ -127,6 +125,7 @@ export const DocumentsRoute: FC = () => {
       if (json) {
         await getDocuments();
       }
+      setShowModal(false);
     } catch {
       setModalError('Failed to delete document.');
     }
@@ -153,7 +152,6 @@ export const DocumentsRoute: FC = () => {
               server === 'GAIA Server'
                 ? deleteGaiaServerDocument(name)
                 : handleDelete(name);
-              setShowModal(false);
             }}
           >
             Delete
