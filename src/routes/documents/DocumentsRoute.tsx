@@ -48,6 +48,7 @@ export const DocumentsRoute: FC = () => {
         headers
       });
       const json = await response.json();
+      console.log("GET response:", json)
       if (json) {
         typeof json.moved === 'string' && setResponse(json.moved);
         Object.values(json.files).map(file => {
@@ -116,13 +117,13 @@ export const DocumentsRoute: FC = () => {
     const headers = new Headers();
 
     try {
-      const response = await fetch(`${process.env.DOC_API_URL}/upload.php`, {
+      const response = await fetch(`${process.env.DOC_API_URL}/upload.php?file=${fileName}`, {
         method: 'DELETE',
-        headers,
-        body: JSON.stringify(fileName)
+        headers
       });
       const json = await response.json();
       if (json) {
+        console.log("DELETE response: ", json)
         await getDocuments();
       }
       setShowModal(false);
