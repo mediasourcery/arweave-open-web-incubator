@@ -62,13 +62,14 @@ export const Modal: React.FC<IProps> = ({
   onKeyDown,
   onClickAway
 }) => {
-  const { showModal, setShowModal, modalContent } = useContext(ModalContext);
+  const { showModal, setShowModal, modalContent, setModalError } = useContext(ModalContext);
 
   onOpen = () => {
     if (this.closeButtonNode && this.closeButtonNode.focus()) return;
   };
 
   onClose = () => {
+    setModalError('');
     setShowModal(false);
   };
 
