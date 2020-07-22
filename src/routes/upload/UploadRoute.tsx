@@ -1,5 +1,5 @@
+import * as IPFS from 'ipfs';
 import * as React from 'react';
-import * as blockstack from 'blockstack';
 import { putFile } from 'blockstack';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
 
@@ -22,14 +22,43 @@ export const UploadRoute: FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  const handleGaiaUpload = async (fileName, file, options) => {
+  const [ipfsNode, setIpfsNode] = useState();
+
+  const uport = new uportconnect('TestApp', {
+    network: 'mainnet',
+    bannerImage: {
+      '/': '/ipfs/QmQf1uGU7M9vSv3gFEmU36g1idim7hhtbog8yBnYCy7Psz'
+    }
+  });
+
+  const handleGaiaUpload = async (fileName, file) => {
     setErrorMessage('');
     setSuccessMessage('');
     try {
-      await putFile(fileName, file, options).then(() => {
-        setSuccessMessage('Document uploaded successfully!');
-        setIsLoading(false);
+      await putFile(fileName, file, {
+        encrypt: false
       });
+      setSuccessMessage('Document uploaded successfully!');
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err);
+      setErrorMessage('An unexpected error occurred. Please try again.');
+      setIsLoading(false);
+    }
+  };
+
+  const handleIpfsUpload = async (fileName, file: File) => {
+    setErrorMessage('');
+    setSuccessMessage('');
+    try {
+      const results = await ipfsNode.add(file);
+      for await (const { cid } of results) {
+        uport.sendVerification({
+          claim: { Document: { Name: fileName, Type: file.type, Hash: cid.toString() } }
+        });
+      }
+      setSuccessMessage('Document uploaded successfully!');
+      setIsLoading(false);
     } catch (err) {
       console.log(err);
       setErrorMessage('An unexpected error occurred. Please try again.');
@@ -59,10 +88,6 @@ export const UploadRoute: FC = () => {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-    let options = {
-      encrypt: false
-    };
-
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage('');
@@ -75,7 +100,9 @@ export const UploadRoute: FC = () => {
     headers.delete('Content-Type');
 
     if (serverType === 'gaia') {
-      await handleGaiaUpload(file.name, file, options);
+      await handleGaiaUpload(file.name, file);
+    } else if (serverType === 'ipfs') {
+      await handleIpfsUpload(file.name, file);
     } else {
       await handleServerUpload('post', headers, formData);
     }
@@ -89,6 +116,10 @@ export const UploadRoute: FC = () => {
     setFileType(e.target.value);
   };
 
+  const load = async () => {
+    setIpfsNode(await IPFS.create());
+  };
+
   useEffect(() => {
     setPage('upload');
     setBreadcrumbs([
@@ -97,7 +128,12 @@ export const UploadRoute: FC = () => {
         url: 'upload'
       }
     ]);
+    load();
   }, []);
+
+  const uPortUser = localStorage.getItem('connectState')
+    ? JSON.parse(JSON.parse(localStorage.getItem('connectState')))
+    : undefined;
 
   return (
     <ContentBox>
@@ -115,7 +151,7 @@ export const UploadRoute: FC = () => {
           <option value="document">document</option>
           <option value="pdf">pdf</option>
         </select>
-        {token.sub.includes('blockstack') && (
+        {token?.sub?.includes('blockstack') && (
           <select
             name="serverType"
             id="serverType"
@@ -125,6 +161,18 @@ export const UploadRoute: FC = () => {
             <option value="">- Choose upload location -</option>
             <option value="internal">Internal Server (default)</option>
             <option value="gaia">GAIA Server</option>
+          </select>
+        )}
+        {uPortUser && (
+          <select
+            name="serverType"
+            id="serverType"
+            className={styles.select}
+            onChange={e => setServerType(e.target.value)}
+          >
+            <option value="">- Choose upload location -</option>
+            <option value="internal">Internal Server (default)</option>
+            <option value="ipfs">IPFS</option>
           </select>
         )}
         <input

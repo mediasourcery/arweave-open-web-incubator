@@ -1,3 +1,4 @@
+import * as IPFS from 'ipfs';
 import * as React from 'react';
 import * as path from 'path';
 import { FC, useContext, useEffect, useState } from 'react';
@@ -35,6 +36,15 @@ export const DocumentsRoute: FC = () => {
   );
   const [sorting, setSorting] = useState<'asc' | 'desc'>('asc');
 
+  const [ipfsNode, setIpfsNode] = useState();
+
+  const uport = new uportconnect('TestApp', {
+    network: 'mainnet',
+    bannerImage: {
+      '/': '/ipfs/QmQf1uGU7M9vSv3gFEmU36g1idim7hhtbog8yBnYCy7Psz'
+    }
+  });
+
   const getDocuments = async () => {
     setFilesArray([]);
     setIsLoading(true);
@@ -60,10 +70,26 @@ export const DocumentsRoute: FC = () => {
         });
       }
 
-      if (token.sub.includes('blockstack')) {
+      if (token?.sub?.includes('blockstack')) {
         const gaiaFiles = await getGaiaServerDocuments();
         gaiaFiles.map(gaiaFile => {
           files.push(gaiaFile);
+        });
+      }
+
+      if (localStorage.connectState) {
+        uport.requestDisclosure({ verified: ['Document'] }, 'disclosureReq');
+
+        const res = await uport.onResponse('disclosureReq');
+
+        files.push({
+          fileName: res.payload.Document.Name,
+          // fileUrl: `data:${res.payload.Document.Type};base64,${btoa(
+          //   Buffer.concat(chunks).toString()
+          // )}`,
+          fileUrl: `https://ipfs.io/ipfs/${res.payload.Document.Hash}`,
+          server: 'IPFS',
+          hasThumbnail: determineIfThumbnail(res.payload.Document.Name)
         });
       }
 
@@ -169,16 +195,26 @@ export const DocumentsRoute: FC = () => {
     );
   };
 
+  const load = async () => {
+    setIpfsNode(await IPFS.create());
+  };
+
   useEffect(() => {
     setPage('documents');
-    getDocuments();
     setBreadcrumbs([
       {
         text: 'Documents',
         url: 'documents'
       }
     ]);
+    load();
   }, []);
+
+  useEffect(() => {
+    if (ipfsNode) {
+      getDocuments();
+    }
+  }, [ipfsNode]);
 
   useEffect(() => {
     const newFilesArray = filesArray.slice().sort((a, b) => {
@@ -305,7 +341,9 @@ export const DocumentsRoute: FC = () => {
                               {file.hasThumbnail ? (
                                 <div
                                   className={styles.thumbnail}
-                                  style={{ backgroundImage: `url(${process.env.DOC_API_URL}/uploads/${file.fileName}` }}
+                                  style={{
+                                    backgroundImage: `url(${process.env.DOC_API_URL}/uploads/${file.fileName}`
+                                  }}
                                 />
                               ) : (
                                 <img
@@ -316,7 +354,7 @@ export const DocumentsRoute: FC = () => {
                               {file.fileName}
                             </a>
                           )}
-                          {file.server !== 'Internal Server' && (
+                          {file.server === 'GAIA Server' && (
                             <a
                               className={styles.documentLink}
                               target="_blank"
@@ -325,7 +363,31 @@ export const DocumentsRoute: FC = () => {
                               {file.hasThumbnail ? (
                                 <div
                                   className={styles.thumbnail}
-                                  style={{ backgroundImage: `url(${file.fileUrl}` }}
+                                  style={{
+                                    backgroundImage: `url(${file.fileUrl}`
+                                  }}
+                                />
+                              ) : (
+                                <img
+                                  className={styles.documentIcon}
+                                  src={`${process.env.PUBLIC_URL}icons/document.svg`}
+                                />
+                              )}
+                              {file.fileName}
+                            </a>
+                          )}
+                          {file.server === 'IPFS' && (
+                            <a
+                              className={styles.documentLink}
+                              target="_blank"
+                              href={file.fileUrl}
+                            >
+                              {file.hasThumbnail ? (
+                                <div
+                                  className={styles.thumbnail}
+                                  style={{
+                                    backgroundImage: `url(${file.fileUrl}`
+                                  }}
                                 />
                               ) : (
                                 <img
