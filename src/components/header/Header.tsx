@@ -11,16 +11,28 @@ import { decodeToken } from '../../utils';
 import styles from './Header.scss';
 
 export const Header: React.FunctionComponent = () => {
-  const token = decodeToken(sessionStorage.getItem('token'));
   const { showMenu, setShowMenu } = useContext(MenuContext);
   const { setPopoverItems, showPopover, setShowPopover } = useContext(
     PopoverContext
   );
 
-  const emailIdentifier = token.identifiers.find(
-    identifier => identifier.type === 'email'
-  );
+  const token = sessionStorage.getItem('token')
+    ? decodeToken(sessionStorage.getItem('token'))
+    : undefined;
+  const emailIdentifier = token
+    ? token.identifiers.find(identifier => identifier.type === 'email')
+    : undefined;
   const email = emailIdentifier ? emailIdentifier.value : '';
+
+  const uPortUser = localStorage.getItem('connectState')
+    ? JSON.parse(JSON.parse(localStorage.getItem('connectState')))
+    : undefined;
+
+  const username = token
+    ? token.sub
+    : uPortUser
+    ? uPortUser.name
+    : 'Unknown';
 
   return (
     <header className={styles.header}>
@@ -42,7 +54,7 @@ export const Header: React.FunctionComponent = () => {
           size={32}
         />
       </div>
-      <div className={styles.userName}>{token.sub}</div>
+      <div className={styles.userName}>{username}</div>
       <div className={styles.user}>
         <button
           className={styles.userButton}

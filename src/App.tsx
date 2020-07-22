@@ -23,28 +23,44 @@ const App: React.FunctionComponent = () => {
   const query: {
     token?: string;
     blockstackSession?: string;
+    uPortSession?: string;
   } = querystring.parse(location.search.substr(1));
 
+  if (query.blockstackSession) {
+    localStorage.setItem('blockstack-session', atob(query.blockstackSession));
+  }
+  if (query.uPortSession) {
+    localStorage.setItem('connectState', atob(query.uPortSession));
+  }
   if (query.token) {
     sessionStorage.setItem('token', query.token);
-  } else if (!sessionStorage.getItem('token')) {
-    redirectToLogin();
   }
-
-  if (query.blockstackSession) {
-    localStorage.setItem('blockstack-session', query.blockstackSession);
-  }
-  const decodedToken = decodeToken(sessionStorage.getItem('token'));
-
+  
   if (
-    !decodedToken.capabilities.find(
-      c =>
-        (c.name === 'admin' && c.target === null) ||
-        (c.name === 'use' && c.target === process.env.CLIENT_ID)
-    )
+    !localStorage.getItem('blockstack-session')
+    &&
+    !localStorage.getItem('connectState')
+    &&
+    !sessionStorage.getItem('token')
   ) {
-    window.location.href = `${process.env.AUTH_UI_GATEWAY_URL}/unauthorized`;
+    redirectToLogin();
     return;
+  }
+
+  if (!localStorage.getItem('blockstack-session') && !localStorage.getItem('connectState')) {
+    const decodedToken = decodeToken(sessionStorage.getItem('token'));
+
+    if (
+      !decodedToken.capabilities.find(
+        c =>
+          (c.name === 'admin' && c.target === null) ||
+          (c.name === 'use' && c.target === process.env.CLIENT_ID)
+      )
+        && !localStorage.getItem('uport-session')
+    ) {
+      window.location.href = `${process.env.AUTH_UI_GATEWAY_URL}/unauthorized`;
+      return;
+    }
   }
 
   return (
