@@ -46,7 +46,6 @@ export const DocumentsRoute: FC = () => {
   });
 
   const getDocuments = async () => {
-    setFilesArray([]);
     setIsLoading(true);
 
     const headers = new Headers();
@@ -59,6 +58,7 @@ export const DocumentsRoute: FC = () => {
         headers
       });
       const json = await response.json();
+      console.log("GET response:", json)
       if (json) {
         typeof json.moved === 'string' && setResponse(json.moved);
         Object.values(json.files).map(file => {
@@ -131,28 +131,28 @@ export const DocumentsRoute: FC = () => {
     try {
       await deleteFile(name);
       setIsLoading(false);
-      setFilesArray([]);
       await getDocuments();
+      setShowModal(false);
     } catch (err) {
       setModalError('Failed to delete document.');
     }
   };
 
   const handleDelete = async fileName => {
-    setFilesArray([]);
     setModalError('');
     const headers = new Headers();
 
     try {
-      const response = await fetch(`${process.env.DOC_API_URL}/upload.php`, {
+      const response = await fetch(`${process.env.DOC_API_URL}/upload.php?file=${fileName}`, {
         method: 'DELETE',
-        headers,
-        body: JSON.stringify(fileName)
+        headers
       });
       const json = await response.json();
       if (json) {
+        console.log("DELETE response: ", json)
         await getDocuments();
       }
+      setShowModal(false);
     } catch {
       setModalError('Failed to delete document.');
     }
@@ -179,7 +179,6 @@ export const DocumentsRoute: FC = () => {
               server === 'GAIA Server'
                 ? deleteGaiaServerDocument(name)
                 : handleDelete(name);
-              setShowModal(false);
             }}
           >
             Delete
