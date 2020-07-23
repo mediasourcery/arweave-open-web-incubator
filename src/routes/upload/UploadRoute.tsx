@@ -1,14 +1,13 @@
+import { putFile } from 'blockstack';
 import * as IPFS from 'ipfs';
 import * as React from 'react';
-import { putFile } from 'blockstack';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
-
-import { Loader, Button, ContentBox, PageHeader } from '../../components';
+import { Button, ContentBox, Loader, PageHeader } from '../../components';
 import { BreadcrumbsContext, PageContext } from '../../contexts';
-import { redirectToLogin } from '../../utils';
-import { decodeToken } from '../../utils';
-
+import { decodeToken, redirectToLogin } from '../../utils';
 import styles from './UploadRoute.scss';
+
+
 
 export const UploadRoute: FC = () => {
   const token = decodeToken(sessionStorage.getItem('token'));
@@ -70,7 +69,7 @@ export const UploadRoute: FC = () => {
     setErrorMessage('');
     setSuccessMessage('');
     try {
-      await fetch(`${process.env.DOC_API_URL}/upload.php`, {
+      await fetch(`${process.env.DOC_API_URL}/uploads`, {
         method,
         headers,
         body

@@ -53,7 +53,7 @@ export const DocumentsRoute: FC = () => {
 
     try {
       const files = [];
-      const response = await fetch(`${process.env.DOC_API_URL}/upload.php`, {
+      const response = await fetch(`${process.env.DOC_API_URL}/uploads`, {
         method: 'get',
         headers
       });
@@ -61,9 +61,12 @@ export const DocumentsRoute: FC = () => {
       console.log("GET response:", json)
       if (json) {
         typeof json.moved === 'string' && setResponse(json.moved);
-        Object.values(json.files).map(file => {
+        Object.values(json.data).map((file: string) => {
+
+          const url = file ? file.split(`${process.env.DOC_API_URL}/uploads/view/`)[1] : ''
+
           files.push({
-            fileName: file,
+            fileName: encodeURI(url),
             server: 'Internal Server',
             hasThumbnail: determineIfThumbnail(file)
           });
@@ -143,13 +146,16 @@ export const DocumentsRoute: FC = () => {
     const headers = new Headers();
 
     try {
-      const response = await fetch(`${process.env.DOC_API_URL}/upload.php?file=${fileName}`, {
-        method: 'DELETE',
-        headers
-      });
+      const response = await fetch(
+        `${process.env.DOC_API_URL}/uploads/:${fileName}`,
+        {
+          method: 'DELETE',
+          headers
+        }
+      );
       const json = await response.json();
       if (json) {
-        console.log("DELETE response: ", json)
+        console.log('DELETE response: ', json);
         await getDocuments();
       }
       setShowModal(false);
@@ -332,27 +338,27 @@ export const DocumentsRoute: FC = () => {
                       <td>
                         <div className={styles.flexContainer}>
                           {file.server === 'Internal Server' && (
-                            <a
-                              className={styles.documentLink}
-                              target="_blank"
-                              href={`${process.env.DOC_API_URL}/viewer/?file=${file.fileName}`}
-                            >
-                              {file.hasThumbnail ? (
-                                <div
-                                  className={styles.thumbnail}
-                                  style={{
-                                    backgroundImage: `url(${process.env.DOC_API_URL}/uploads/${file.fileName}`
-                                  }}
-                                />
-                              ) : (
-                                <img
-                                  className={styles.documentIcon}
-                                  src={`${process.env.PUBLIC_URL}icons/document.svg`}
-                                />
-                              )}
-                              {file.fileName}
-                            </a>
-                          )}
+		                <a
+		                  className={styles.documentLink}
+		                  target="_blank"
+		                  href={`${process.env.DOC_API_URL}/uploads/view/${file.fileName}`}
+		                >
+		                  {file.hasThumbnail ? (
+		                    <div
+		                      className={styles.thumbnail}
+		                      style={{
+		                        backgroundImage: `url(${process.env.DOC_API_URL}/uploads/view/${file.fileName}`
+		                      }}
+		                    />
+		                  ) : (
+		                      <img
+		                        className={styles.documentIcon}
+		                        src={`${process.env.PUBLIC_URL}icons/document.svg`}
+		                      />
+		                    )}
+		                  {file.fileName}
+		                </a>
+		              )}
                           {file.server === 'GAIA Server' && (
                             <a
                               className={styles.documentLink}
