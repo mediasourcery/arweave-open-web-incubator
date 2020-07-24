@@ -38,13 +38,6 @@ export const DocumentsRoute: FC = () => {
 
   const [ipfsNode, setIpfsNode] = useState();
 
-  const uport = new uportconnect('TestApp', {
-    network: 'mainnet',
-    bannerImage: {
-      '/': '/ipfs/QmQf1uGU7M9vSv3gFEmU36g1idim7hhtbog8yBnYCy7Psz'
-    }
-  });
-
   const getDocuments = async () => {
     setIsLoading(true);
 
@@ -77,7 +70,14 @@ export const DocumentsRoute: FC = () => {
         });
       }
 
-      if (localStorage.connectState) {
+      if (localStorage.getItem('connectState')) {
+        const uport = new uportconnect('TestApp', {
+          network: 'mainnet',
+          bannerImage: {
+            '/': '/ipfs/QmQf1uGU7M9vSv3gFEmU36g1idim7hhtbog8yBnYCy7Psz'
+          }
+        });
+
         uport.requestDisclosure({ verified: ['Document'] }, 'disclosureReq');
 
         const res = await uport.onResponse('disclosureReq');
@@ -195,7 +195,11 @@ export const DocumentsRoute: FC = () => {
   };
 
   const load = async () => {
-    setIpfsNode(await IPFS.create());
+    if (localStorage.getItem('connectState')) {
+      setIpfsNode(await IPFS.create());
+    } else {
+      getDocuments();
+    }
   };
 
   useEffect(() => {

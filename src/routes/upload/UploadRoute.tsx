@@ -22,14 +22,7 @@ export const UploadRoute: FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  const [ipfsNode, setIpfsNode] = useState();
-
-  const uport = new uportconnect('TestApp', {
-    network: 'mainnet',
-    bannerImage: {
-      '/': '/ipfs/QmQf1uGU7M9vSv3gFEmU36g1idim7hhtbog8yBnYCy7Psz'
-    }
-  });
+  const [ipfsNode, setIpfsNode] = useState<any>();
 
   const handleGaiaUpload = async (fileName, file) => {
     setErrorMessage('');
@@ -51,6 +44,12 @@ export const UploadRoute: FC = () => {
     setErrorMessage('');
     setSuccessMessage('');
     try {
+      const uport = new uportconnect('TestApp', {
+        network: 'mainnet',
+        bannerImage: {
+          '/': '/ipfs/QmQf1uGU7M9vSv3gFEmU36g1idim7hhtbog8yBnYCy7Psz'
+        }
+      });    
       const results = await ipfsNode.add(file);
       for await (const { cid } of results) {
         uport.sendVerification({
@@ -117,7 +116,9 @@ export const UploadRoute: FC = () => {
   };
 
   const load = async () => {
-    setIpfsNode(await IPFS.create());
+    if (localStorage.getItem('connectState')) {
+      setIpfsNode(await IPFS.create());
+    }
   };
 
   useEffect(() => {
