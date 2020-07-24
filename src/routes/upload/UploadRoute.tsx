@@ -144,7 +144,7 @@ export const UploadRoute: FC = () => {
     setErrorMessage('');
     setSuccessMessage('');
     try {
-      await fetch(`${process.env.DOC_API_URL}/upload.php`, {
+      await fetch(`${process.env.DOC_API_URL}/uploads`, {
         method,
         headers,
         body
@@ -222,7 +222,6 @@ export const UploadRoute: FC = () => {
   return (
     <ContentBox>
       <PageHeader header="Document Uploader"></PageHeader>
-
       <form onSubmit={e => handleSubmit(e)} className={styles.form}>
         <select
           name="fileType"
