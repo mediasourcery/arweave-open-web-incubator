@@ -657,7 +657,7 @@ export const DocumentsRoute: FC = () => {
                   {file.fileName}
                 </a>
               )}
-              {file.server !== 'Internal Server' && file.server !== 'Arweave' && (
+              {file.server === 'Arweave' && (
                 <a
                   className={styles.documentLink}
                   target="_blank"
@@ -673,19 +673,6 @@ export const DocumentsRoute: FC = () => {
                     )}
                   {file.fileName}
                 </a>
-              )
-              }
-              {file.server !== 'Arweave' && (
-                <ModalLink
-                  content={getModalContent(file.fileName, file.server)}
-                >
-                  <IconButton
-                    className={styles.actionBtn}
-                    disabled={isDeleting}
-                    image="icons/delete-primary.svg"
-                    title="Delete Service"
-                  />
-                </ModalLink>
               )}
               {file.server !== 'Internal Server' && file.server !== 'Arweave' && (
                 <a
@@ -706,6 +693,18 @@ export const DocumentsRoute: FC = () => {
                     )}
                   {file.fileName}
                 </a>
+              )}
+              {file.server !== 'Arweave' && (
+                <ModalLink
+                  content={getModalContent(file.fileName, file.server)}
+                >
+                  <IconButton
+                    className={styles.actionBtn}
+                    disabled={isDeleting}
+                    image="icons/delete-primary.svg"
+                    title="Delete Service"
+                  />
+                </ModalLink>
               )}
               {file.server === 'GAIA Server' && (
                 <a
