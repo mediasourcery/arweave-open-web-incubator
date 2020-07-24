@@ -1,14 +1,16 @@
+import { putFile } from 'blockstack';
 import * as IPFS from 'ipfs';
 import * as React from 'react';
-import { putFile } from 'blockstack';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
-
-import { Loader, Button, ContentBox, PageHeader } from '../../components';
-import { BreadcrumbsContext, PageContext } from '../../contexts';
-import { redirectToLogin } from '../../utils';
-import { decodeToken } from '../../utils';
-
+import { Button, ContentBox, Loader, PageHeader } from '../../components';
+import {
+  ArweaveContext,
+  BreadcrumbsContext,
+  PageContext
+} from '../../contexts';
+import { decodeToken, redirectToLogin } from '../../utils';
 import styles from './UploadRoute.scss';
+
 
 export const UploadRoute: FC = () => {
   const token = decodeToken(sessionStorage.getItem('token'));
@@ -21,8 +23,16 @@ export const UploadRoute: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
+  const {
+    arweave,
+    arweaveKey,
+    walletAddress,
+    setLastTransaction
+  } = useContext(ArweaveContext);
+  const [arweaveLink, setArweaveLink] = useState('');
+  const [inputUrl, setInputUrl] = useState('');
   const [ipfsNode, setIpfsNode] = useState<any>();
+
 
   const handleGaiaUpload = async (fileName, file) => {
     setErrorMessage('');
@@ -40,6 +50,71 @@ export const UploadRoute: FC = () => {
     }
   };
 
+  const handleArweaveUpload = async file => {
+    let transaction;
+    let response;
+
+    if (!arweaveKey) {
+      setErrorMessage('No arweave key found. Please log in and try again.');
+      setIsLoading(false);
+      return;
+    }
+
+    const fileReader = new FileReader();
+    fileReader.onload = async ev => {
+      // @ts-ignore
+      const filetoRead = new Uint8Array(ev.target.result);
+
+      try {
+        transaction = await arweave.createTransaction(
+          {
+            data: filetoRead
+          },
+          arweaveKey
+        );
+
+        transaction.addTag('Content-Type', file.type);
+        transaction.addTag('File-Name', file.name);
+        transaction.addTag('Upload-Date', Date.now());
+      } catch {
+        setErrorMessage('Failed to create transaction. Please try again.');
+        setIsLoading(false);
+      }
+
+      try {
+        await arweave.transactions.sign(transaction, arweaveKey);
+      } catch (err) {
+        setErrorMessage('Failed to sign transaction. Please try again.');
+        setIsLoading(false);
+      }
+
+      try {
+        response = await arweave.transactions.post(transaction);
+      } catch (err) {
+        setErrorMessage('Failed to post transaction. Please try again.');
+        setIsLoading(false);
+      }
+
+      if (response.status === 200 || response.status === 202) {
+        setSuccessMessage(
+          `Document uploaded successfully! Here's your transaction id: ${transaction.id}`
+        );
+
+        setLastTransaction(transaction.id);
+
+        setArweaveLink(
+          `${arweave.api.config.protocol}://${arweave.api.config.host}:${arweave.api.config.port}/${transaction.id}`
+        );
+
+        setIsLoading(false);
+      }
+
+      return response;
+    };
+
+    fileReader.readAsArrayBuffer(file);
+  };
+
   const handleIpfsUpload = async (fileName, file: File) => {
     setErrorMessage('');
     setSuccessMessage('');
@@ -49,7 +124,7 @@ export const UploadRoute: FC = () => {
         bannerImage: {
           '/': '/ipfs/QmQf1uGU7M9vSv3gFEmU36g1idim7hhtbog8yBnYCy7Psz'
         }
-      });    
+      });
       const results = await ipfsNode.add(file);
       for await (const { cid } of results) {
         uport.sendVerification({
@@ -93,6 +168,7 @@ export const UploadRoute: FC = () => {
     setSuccessMessage('');
 
     const formData = new FormData();
+
     formData.append('uploadfile', file, file.name);
 
     const headers = new Headers();
@@ -102,6 +178,8 @@ export const UploadRoute: FC = () => {
       await handleGaiaUpload(file.name, file);
     } else if (serverType === 'ipfs') {
       await handleIpfsUpload(file.name, file);
+    } else if (serverType === 'arweave') {
+      await handleArweaveUpload(file);
     } else {
       await handleServerUpload('post', headers, formData);
     }
@@ -109,6 +187,11 @@ export const UploadRoute: FC = () => {
 
   const handleFile = e => {
     setFile(e.target.files[0]);
+  };
+
+  const handleInput = e => {
+    setInputUrl(e.target.value);
+    setFile(e.target.value);
   };
 
   const handleSelect = e => {
@@ -161,6 +244,7 @@ export const UploadRoute: FC = () => {
           >
             <option value="">- Choose upload location -</option>
             <option value="internal">Internal Server (default)</option>
+            {walletAddress && <option value="arweave">Arweave Server</option>}
             <option value="gaia">GAIA Server</option>
           </select>
         )}
@@ -172,6 +256,7 @@ export const UploadRoute: FC = () => {
             onChange={e => setServerType(e.target.value)}
           >
             <option value="">- Choose upload location -</option>
+            {walletAddress && <option value="arweave">Arweave Server</option>}
             <option value="internal">Internal Server (default)</option>
             <option value="ipfs">IPFS</option>
           </select>
@@ -194,6 +279,14 @@ export const UploadRoute: FC = () => {
 
       {successMessage ? (
         <div className={styles.messageSuccess}>{successMessage}</div>
+      ) : null}
+
+      {arweaveLink && successMessage ? (
+        <div className={styles.messageSuccess}>
+          <a className={styles.link} href={arweaveLink} target="_blank">
+            <Button styleOverride={styles.button}>View File</Button>
+          </a>
+        </div>
       ) : null}
 
       {errorMessage ? (

@@ -2,12 +2,10 @@ import * as crypto from 'crypto';
 import * as React from 'react';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-
 import { Icon, IconButton } from '..';
-
 import { MenuContext, PopoverContext } from '../../contexts';
 import { decodeToken } from '../../utils';
-
+import { ArweaveModalContent } from '../modalArweave/ModalArweave';
 import styles from './Header.scss';
 
 export const Header: React.FunctionComponent = () => {
@@ -31,8 +29,8 @@ export const Header: React.FunctionComponent = () => {
   const username = token
     ? token.sub
     : uPortUser
-    ? uPortUser.name
-    : 'Unknown';
+      ? uPortUser.name
+      : 'Unknown';
 
   return (
     <header className={styles.header}>
@@ -54,6 +52,10 @@ export const Header: React.FunctionComponent = () => {
           size={32}
         />
       </div>
+      <div>
+        <ArweaveModalContent></ArweaveModalContent>
+      </div>
+      <div className={styles.spacer} />
       <div className={styles.userName}>{username}</div>
       <div className={styles.user}>
         <button

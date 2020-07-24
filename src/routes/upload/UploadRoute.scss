@@ -32,6 +32,11 @@
 	padding: 15px;
 }
 
+.modalButtonContainer {
+	display: flex;
+	justify-content: center;
+}
+
 .messageError, .messageSuccess {
 	padding: 15px;
 }
@@ -42,4 +47,29 @@
 
 .messageSuccess {
 	color: green;
+}
+
+.modalButtonBlue, .modalButtonRed {
+	width: 100px;
+	height: 40px;
+	padding: 0;
+
+	&:focus {
+		outline: 0
+	}
+}
+  
+.modalButtonBlue { 
+	background-color: $color-primary;
+	margin-right: 10px;
+  
+	&:hover {
+	  background-color: $color-primary-hover;
+	}
+}
+
+.link {
+  &:hover {
+    text-decoration: none;
+  }
 }
