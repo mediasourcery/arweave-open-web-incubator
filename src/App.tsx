@@ -18,6 +18,7 @@ import { DocumentsRoute, HomeRoute, LogoutRoute, UploadRoute } from './routes';
 import { redirectToLogin } from './utils';
 
 import styles from './App.scss';
+import { ArweaveContextProvider } from './contexts/arweave';
 
 const App: React.FunctionComponent = () => {
   const query: {
@@ -91,15 +92,17 @@ const App: React.FunctionComponent = () => {
 };
 
 export const AppProviders: React.SFC = ({ children }) => (
-  <MenuContextProvider>
-    <ModalContextProvider>
-      <PageContextProvider>
-        <BreadcrumbsContextProvider>
-          <PopoverContextProvider>{children}</PopoverContextProvider>
-        </BreadcrumbsContextProvider>
-      </PageContextProvider>
-    </ModalContextProvider>
-  </MenuContextProvider>
+  <ArweaveContextProvider>
+    <MenuContextProvider>
+      <ModalContextProvider>
+        <PageContextProvider>
+          <BreadcrumbsContextProvider>
+            <PopoverContextProvider>{children}</PopoverContextProvider>
+          </BreadcrumbsContextProvider>
+        </PageContextProvider>
+      </ModalContextProvider>
+    </MenuContextProvider>
+  </ArweaveContextProvider>
 );
 
 render(

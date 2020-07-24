@@ -1,9 +1,8 @@
 import * as React from 'react';
-import ReactDOM from 'react-dom';
 import { useContext, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { CSSTransition } from 'react-transition-group';
 import { ModalContext } from '../../contexts/modal';
-import classNames from 'classnames';
 import styles from './Modal.scss';
 
 interface IProps {
@@ -62,7 +61,9 @@ export const Modal: React.FC<IProps> = ({
   onKeyDown,
   onClickAway
 }) => {
-  const { showModal, setShowModal, modalContent, setModalError } = useContext(ModalContext);
+  const { showModal, setShowModal, modalContent, setModalError } = useContext(
+    ModalContext
+  );
 
   onOpen = () => {
     if (this.closeButtonNode && this.closeButtonNode.focus()) return;

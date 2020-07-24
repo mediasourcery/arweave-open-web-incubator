@@ -6,7 +6,7 @@ interface IProps {
   disabled?: boolean;
   label?: string;
   name: string;
-  onChange?: (value: string) => void;
+  onChange?(event: React.FormEvent<HTMLInputElement>): void;
   options?: IOption[];
   placeholder?: string;
   required?: boolean;
