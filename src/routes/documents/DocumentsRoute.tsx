@@ -1,3 +1,4 @@
+import { and, equals } from 'arql-ops';
 import { deleteFile, getFileUrl, listFiles } from 'blockstack';
 import * as IPFS from 'ipfs';
 import * as path from 'path';
@@ -73,8 +74,7 @@ export const DocumentsRoute: FC = () => {
 
   const handleDrop = async props => {
     // Read the file as Data URL (since we accept only images)
-    const file = `${process.env.DOC_API_URL}/viewer/?file=${currentFile.src}`;
-    const result = await fetch(`https://cors-anywhere.herokuapp.com/${file}`)
+    const result = await fetch(`${process.env.DOC_API_URL}/uploads/view/${currentFile.src}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -296,7 +296,8 @@ export const DocumentsRoute: FC = () => {
                 fileUrl: `${arweave.api.config.protocol}://${arweave.api.config.host}:${arweave.api.config.port}/${transaction}`,
                 tags,
                 transaction,
-                server: 'Arweave'
+                server: 'Arweave',
+                hasThumbnail
               };
             }
           } catch (err) {
@@ -324,8 +325,6 @@ export const DocumentsRoute: FC = () => {
       });
 
       const json = await response.json();
-
-      console.log('json', json);
 
 
       if (json) {
@@ -441,7 +440,7 @@ export const DocumentsRoute: FC = () => {
 
     try {
       const response = await fetch(
-        `${process.env.DOC_API_URL}/uploads/:${fileName}`,
+        `${process.env.DOC_API_URL}/uploads/${fileName}`,
         {
           method: 'DELETE',
           headers
@@ -630,11 +629,12 @@ export const DocumentsRoute: FC = () => {
       return (
         <tr
           className={styles.document}
-          key={`${file.server}-${file.fileName}`}
+          key={`${file.server}-${file.fileName}-${file.transaction && file.transaction}`}
+          ref={file.server === 'Internal Server' ? ref : null}
         >
           <td>
             <div className={styles.flexContainer}>
-              {file.server === 'Internal Server' && walletAddress && (<span className={styles.draggable} style={{ opacity: isDragging ? 0.5 : 1 }} ref={ref}></span>)}
+              {file.server === 'Internal Server' && walletAddress && (<div className={styles.draggable} style={{ opacity: isDragging ? 0.5 : 1 }}></div>)}
               {file.server === 'Internal Server' && (
                 <a
                   className={styles.documentLink}
@@ -663,8 +663,11 @@ export const DocumentsRoute: FC = () => {
                   target="_blank"
                   href={file.fileUrl}
                 >
-                  {file.thumbnail ? (
-                    <img src={file.thumbnail} />
+                  {file.hasThumbnail ? (
+                    <div
+                      className={styles.thumbnail}
+                      style={{ backgroundImage: `url(${file.fileUrl}` }}
+                    />
                   ) : (
                       <img
                         className={styles.documentIcon}
@@ -773,9 +776,6 @@ export const DocumentsRoute: FC = () => {
     <ContentBox>
       <DndProvider backend={HTML5Backend}>
         <PageHeader header="Documents"></PageHeader>
-        {/* <div className={styles.modalButtonContainer}>
-          {!walletAddress ? <ArweaveModalContent></ArweaveModalContent> : null}
-        </div> */}
         <div className={styles.messageContainer}>
           {successMessage ? (
             <div className={styles.messageSuccess}>{successMessage}</div>

@@ -91,8 +91,8 @@ export const ModalArweave: React.FunctionComponent = () => {
             walletAddress &&
             `Arweave balance: ${arweaveBalance} `}
             {walletAddress && (
-              <a onClick={() => resetArweave()} href="#">
-                Log out
+              <a className={styles.walletButton} onClick={() => resetArweave()} href="#">
+                Close Wallet
               </a>
             )}</p>
           {!walletAddress &&
@@ -105,7 +105,7 @@ export const ModalArweave: React.FunctionComponent = () => {
               >
                 Get yours here
               </a>
-              <a href="#" onClick={e => this.fileUploader.click(e)}>
+              <a className={styles.walletButton} href="#" onClick={e => this.fileUploader.click(e)}>
                 Upload Wallet
               </a>
             </p>

@@ -191,8 +191,8 @@ th {
 
 .thumbnail {
 	border: 1px solid #ddd;
-  	border-radius: 4px;
-  	padding: 5px;
+	border-radius: 4px;
+	padding: 5px;
 	width: 50px;
 	height: 50px;
 	background-size: cover;
@@ -207,4 +207,16 @@ th {
 .filterGreen {
 	padding: 0;
   filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%);
+}
+
+.walletButton {
+	background: #233;
+	border-radius: 20px;
+	color: #FFF;
+	padding: 5px 15px;
+} 
+
+.walletButton:hover {
+	background-color: #344;
+	text-decoration: none;
 }
