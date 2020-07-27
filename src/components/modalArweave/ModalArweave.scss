@@ -22,7 +22,7 @@ th {
   }
 
 .form {
-	padding: 15px;
+	font-size: 1em;
 }
 
 .button {
@@ -48,12 +48,34 @@ th {
 .documentLink {
 	display: flex;
 	align-items: center;
+	cursor: pointer;
 }
 
 .errorMessage {
 	color: red;
 	padding: 15px;
 	font-size: 1rem;
+	text-align: center;
+}
+
+.successMessage {
+	color: green;
+	padding: 15px;
+	font-size: 1rem;
+	text-align: center;
+}
+
+.messageError, .messageSuccess {
+	padding: 15px;
+	text-align: center;
+}
+
+.messageError {
+	color: red;
+}
+
+.messageSuccess {
+	color: green;
 }
 
 .flexContainer {
@@ -63,9 +85,6 @@ th {
 	align-items: center;
 }
 
-.loader {
-	padding: 15px;
-}
 
 .modalButtonBlue, .modalButtonRed {
 	width: 100px;
@@ -99,23 +118,41 @@ th {
 	display: flex;
 	justify-content: center;
 }
-  
-.modalMessage { 
+
+.errorContainer {
+	display: flex;
+	justify-content: center;
+	background: red;
 	text-align: center;
 	margin-bottom: 15px;
 }
 
-
-.messageError, .messageSuccess {
-	padding: 15px;
+.succContainer {
+	display: flex;
+	justify-content: center;
+	background: green;
 }
+  
+.modalMessage { 
+	text-align: center;
+	justify-content: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-size: 0.75rem;
 
-.messageError {
-	color: red;
-}
+	form {
+		padding: 0 0;
+	}
 
-.messageSuccess {
-	color: green;
+	p {
+		margin: 0 0;
+	}
+
+	a {
+		display: inline-block;
+		margin: 0 0.5rem;
+	}
 }
   
 .modalMessage span { 
@@ -142,19 +179,10 @@ th {
 
 .fileInput {
 	border: 1px solid #ddd;
-	margin: 15px 0;
-	padding: 15px;
-	bottom: 0; 
-	background: $color-primary;
-	color: #fff;
+	width: 100%;
+	display: flex;
+	justify-content: center;
 	text-align: center;
-	z-index: 99;
-	position: absolute;
-	width: calc(100vw - 62px);
-
-	@media screen and (min-width: 992px) {
-		width: calc(100vw - 250px - 62px);
-	}
 }
 
 .response {
@@ -163,8 +191,8 @@ th {
 
 .thumbnail {
 	border: 1px solid #ddd;
-  	border-radius: 4px;
-  	padding: 5px;
+	border-radius: 4px;
+	padding: 5px;
 	width: 50px;
 	height: 50px;
 	background-size: cover;
@@ -174,62 +202,21 @@ th {
 
 .sortIcon {
 	padding: 0 15px;
-  }
-
-.form {
-	padding: 15px;
 }
 
-.button {
-	margin-top: 15px;
-	padding: 15px;
-	width: 200px;
+.filterGreen {
+	padding: 0;
+  filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%);
 }
 
-.select {
-	background: transparent;
-	border: 1px solid #ddd;
-	border-radius: 4px;
-	display: block;
-	font-size: 16px;
-	height: 34px;
-	line-height: 1;
-	padding: 5px 25px;
-	width: 200px;
-}
+.walletButton {
+	background: #233;
+	border-radius: 20px;
+	color: #FFF;
+	padding: 5px 15px;
+} 
 
-.response {
-	padding: 15px;
-}
-
-.messageContainer {
-	display: flex;
-	padding: 15px;
-	justify-content: center;
-	flex-direction: column;
-	width: 100%;
-	top: 0;
-}
-
-.draggable {
-	position: absolute;
-  left: 0px;
-	top: 0px;
-	
-	&::before {
-		cursor: grab;
-		content: '';
-		width: 0;
-		height: 0;
-		border-style: solid;
-		border-width: 20px 20px 0 0;
-		border-color: $color-primary transparent transparent transparent;
-		left: -15px;
-		top: -20px;
-		position: absolute;
-	}
-}
-
-.flexContainer {
-	position: relative;
+.walletButton:hover {
+	background-color: #344;
+	text-decoration: none;
 }

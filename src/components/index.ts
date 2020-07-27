@@ -11,6 +11,7 @@ export * from './loader/Loader';
 export * from './menu/Menu';
 export * from './menuLink/MenuLink';
 export * from './modal/Modal';
+export * from './modalArweave/ModalArweave';
 export * from './modalLink/ModalLink';
 export * from './pageHeader/PageHeader';
 export * from './popover/Popover';
