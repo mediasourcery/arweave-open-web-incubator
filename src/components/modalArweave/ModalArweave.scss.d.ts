@@ -22,4 +22,5 @@ export const response: string;
 export const thumbnail: string;
 export const sortIcon: string;
 export const filterGreen: string;
+export const walletButton: string;
 export const spin: string;

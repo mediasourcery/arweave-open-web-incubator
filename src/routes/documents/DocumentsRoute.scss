@@ -145,8 +145,10 @@ th {
 	margin: 15px 0;
 	padding: 15px;
 	bottom: 0; 
-	background: #fff;
+	background: $color-primary;
+	color: #fff;
 	text-align: center;
+	z-index: 99;
 	position: absolute;
 	width: calc(100vw - 62px);
 
