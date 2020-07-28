@@ -74,11 +74,13 @@ export const ArweaveContext = createContext<IProps>({
 });
 
 export const ArweaveContextProvider: React.SFC = props => {
-  // const [arweave, arweaveInit] = useState(Arweave.init({host: 'localhost', port: 8000, protocol: 'http'}));
-
-  const [arweave, arweaveInit] = useState(Arweave.init({}));
-
-  // const [arweave, arweaveInit] = useState(Arweave.init({host: 'arweave.net', port: 443, protocol: 'https'}));
+  const [arweave, arweaveInit] = useState(Arweave.init({
+    host: 'arweave.net',
+    port: 443,
+    protocol: 'https',
+    timeout: 20000,
+    logging: false,
+  }));
 
   const [wallet, getWallet] = useState();
   const [arweaveKey, setArweaveKey] = useState(null);
