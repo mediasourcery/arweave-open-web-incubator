@@ -711,7 +711,7 @@ export const DocumentsRoute: FC = () => {
                   />
                 </ModalLink>
               )}
-              {file.server === 'GAIA Server' && (
+              {/* {file.server === 'GAIA Server' && (
                 <a
                   className={styles.documentLink}
                   target="_blank"
@@ -754,7 +754,7 @@ export const DocumentsRoute: FC = () => {
                     )}
                   {file.fileName}
                 </a>
-              )}
+              )} */}
             </div>
           </td>
           <td>
