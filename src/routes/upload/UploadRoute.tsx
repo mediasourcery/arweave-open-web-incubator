@@ -169,7 +169,7 @@ export const UploadRoute: FC = () => {
 
     const formData = new FormData();
 
-    formData.append('uploadfile', file, file.name);
+    formData.append('image', file, file.name);
 
     const headers = new Headers();
     headers.delete('Content-Type');
