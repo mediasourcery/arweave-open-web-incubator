@@ -260,6 +260,18 @@ export const UploadRoute: FC = () => {
             <option value="ipfs">IPFS</option>
           </select>
         )}
+        {!token?.sub?.includes('blockstack') && !uPortUser && (
+          <select
+            name="serverType"
+            id="serverType"
+            className={styles.select}
+            onChange={e => setServerType(e.target.value)}
+          >
+            <option value="">- Choose upload location -</option>
+            {walletAddress && <option value="arweave">Arweave Server</option>}
+            <option value="internal">Internal Server (default)</option>
+          </select>
+        )}
         <input
           type="file"
           name="upload-file"
