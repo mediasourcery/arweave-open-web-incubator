@@ -32,7 +32,7 @@ import {
   ModalContext,
   PageContext
 } from '../../contexts';
-import { decodeToken, redirectToLogin } from '../../utils';
+import { decodeToken, getUserType, redirectToLogin } from '../../utils';
 import styles from './DocumentsRoute.scss';
 
 interface IFileType {
@@ -341,7 +341,8 @@ export const DocumentsRoute: FC = () => {
         });
       }
 
-      if (token?.sub?.includes('blockstack')) {
+      const userType = getUserType();
+      if (userType === 'blockstack') {
         const gaiaFiles = await getGaiaServerDocuments();
         gaiaFiles.map(gaiaFile => {
           files.push(gaiaFile);
@@ -366,7 +367,7 @@ export const DocumentsRoute: FC = () => {
         }
       }
 
-      if (localStorage.getItem('connectState')) {
+      if (userType === 'uport') {
         const uport = new uportconnect('TestApp', {
           network: 'mainnet',
           bannerImage: {
@@ -494,7 +495,8 @@ export const DocumentsRoute: FC = () => {
   };
 
   const load = async () => {
-    if (localStorage.getItem('connectState')) {
+    const userType = getUserType();
+    if (userType === 'uport') {
       setIpfsNode(await IPFS.create());
     } else {
       getDocuments();

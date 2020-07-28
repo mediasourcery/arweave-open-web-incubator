@@ -16,7 +16,7 @@ import {
   BreadcrumbsContextProvider
 } from './contexts';
 
-import { decodeToken } from './utils';
+import { decodeToken, getUserType } from './utils';
 import { DocumentsRoute, Error404Route, HomeRoute, LogoutRoute, UploadRoute } from './routes';
 import { redirectToLogin } from './utils';
 
@@ -40,13 +40,8 @@ const App: React.FunctionComponent = () => {
     sessionStorage.setItem('token', query.token);
   }
   
-  if (
-    !localStorage.getItem('blockstack-session')
-    &&
-    !localStorage.getItem('connectState')
-    &&
-    !sessionStorage.getItem('token')
-  ) {
+  const userType = getUserType();
+  if (userType === 'unknown') {
     redirectToLogin();
     return;
   }
@@ -78,7 +73,7 @@ const App: React.FunctionComponent = () => {
       component: Error404Route
     }
   };
-  if (!localStorage.getItem('blockstack-session') && !localStorage.getItem('connectState')) {
+  if (userType === 'internal') {
     const decodedToken = decodeToken(sessionStorage.getItem('token'));
 
     if (

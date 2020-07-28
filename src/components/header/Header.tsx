@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from '..';
 import { MenuContext, PopoverContext } from '../../contexts';
-import { decodeToken } from '../../utils';
+import { decodeToken, getUserType } from '../../utils';
 import { ArweaveModalContent } from '../modalArweave/ModalArweave';
 import styles from './Header.scss';
 
@@ -22,7 +22,8 @@ export const Header: React.FunctionComponent = () => {
     : undefined;
   const email = emailIdentifier ? emailIdentifier.value : '';
 
-  const uPortUser = localStorage.getItem('connectState')
+  const userType = getUserType();
+  const uPortUser = userType === 'uport'
     ? JSON.parse(JSON.parse(localStorage.getItem('connectState')))
     : undefined;
 
