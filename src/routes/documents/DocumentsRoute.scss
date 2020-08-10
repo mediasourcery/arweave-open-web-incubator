@@ -14,16 +14,22 @@ th {
 	margin-bottom: 20px;
 }
 
-.actionBtn {
+.buttonContainer {
 	margin: 0 0 0 auto;
+}
+
+.actionBtn {
+	margin: 0 0.5rem;
+
 	&:focus {
 	  outline: none;
 	}
-  }
+}
 
 .form {
 	padding: 15px;
 }
+
 
 .button {
 	margin-top: 15px;
@@ -36,7 +42,7 @@ th {
 }
 
 .document:nth-child(even) {
-    background: #f1f1f1;
+  background: #f1f1f1;
 }
 
 .documentIcon {

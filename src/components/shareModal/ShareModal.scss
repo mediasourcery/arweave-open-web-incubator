@@ -1,0 +1,41 @@
+@import '../../styles/Branding.scss';
+
+.modalMessage { 
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+.shareForm {
+	display: flex;
+	flex-direction: column;
+	padding: 15px;
+}
+
+.loader {
+	padding: 15px;
+}
+
+.messageError, .messageSuccess {
+	padding: 15px;
+	text-align: center;
+}
+ 
+.messageError {
+	color: red;
+}
+
+.messageSuccess {
+	color: green;
+}
+
+.shareList {
+	list-style: none;
+}
+
+.actionBtn {
+	margin: 0 1rem 0 0;
+
+	&:focus {
+	  outline: none;
+	}
+}
