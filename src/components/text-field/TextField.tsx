@@ -1,6 +1,6 @@
 import * as React from 'react';
-
 import styles from './TextField.scss';
+
 
 interface IProps {
   disabled?: boolean;
@@ -19,30 +19,17 @@ interface IOption {
   value: string;
 }
 
-export const TextField: React.FC<IProps> = ({
-  disabled = false,
-  label = '',
-  name = '',
-  onChange = () => {},
-  placeholder = '',
-  required = false,
-  type = 'text',
-  value = ''
-}) => (
-  <div className={styles.container}>
-    <label className={styles.label} htmlFor={name}>
-      {label}
-    </label>
-    <input
-      className={styles.input}
-      disabled={disabled}
-      id={name}
-      name={name}
-      placeholder={placeholder}
-      required={required}
-      onChange={onChange}
-      type={type}
-      value={value}
-    />
-  </div>
+export const TextField = React.forwardRef<HTMLInputElement, IProps>(
+  (props, forwardedRef) => {
+    const { name, label } = props;
+
+    return (
+      <div className={styles.container}>
+        <label className={styles.label} htmlFor={name}>
+          {label}
+        </label>
+        <input className={styles.input} name={name} ref={forwardedRef} {...props} />
+      </div>
+    )
+  }
 );

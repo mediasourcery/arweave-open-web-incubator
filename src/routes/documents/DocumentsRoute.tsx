@@ -1,5 +1,5 @@
 import { and, equals } from 'arql-ops';
-import { deleteFile, getFileUrl, listFiles } from 'blockstack';
+import { AppConfig, UserSession } from 'blockstack';
 import * as IPFS from 'ipfs';
 import * as path from 'path';
 import * as React from 'react';
@@ -24,7 +24,8 @@ import {
 
 
 
-  PageHeader
+  PageHeader,
+  ShareModalContent
 } from '../../components';
 import {
   ArweaveContext,
@@ -35,33 +36,33 @@ import {
 import { decodeToken, getUserType, redirectToLogin } from '../../utils';
 import styles from './DocumentsRoute.scss';
 
-interface IFileType {
+
+
+export interface IFileType {
   fileName: string;
   server: string;
+  fileUrl: string;
   hasThumbnail: boolean;
 }
+
+const appConfig = new AppConfig(['store_write']);
+const userSession = new UserSession({ appConfig: appConfig });
 
 export const DocumentsRoute: FC = () => {
   const token = decodeToken(sessionStorage.getItem('token'));
   const { setPage } = useContext(PageContext);
   const { setShowModal, setModalError } = useContext(ModalContext);
   const { setBreadcrumbs } = useContext(BreadcrumbsContext);
-
   const [filesArray, setFilesArray] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState('');
-
   const [orderBy, setOrderBy] = useState<'fileName' | 'fileType' | 'server'>(
     'fileName'
   );
   const [sorting, setSorting] = useState<'asc' | 'desc'>('asc');
-
   const [ipfsNode, setIpfsNode] = useState();
-
-
-  const [currentFile, setCurrentFile] = useState<any>(null);
-
+  const [currentDraggedItem, setCurrentDraggedItem] = useState<any>(null);
   const {
     arweave,
     arweaveKey,
@@ -73,8 +74,7 @@ export const DocumentsRoute: FC = () => {
   const [transactions, setTransactions] = useState([]);
 
   const handleDrop = async props => {
-    // Read the file as Data URL (since we accept only images)
-    const result = await fetch(`${process.env.DOC_API_URL}/uploads/view/${currentFile.src}`)
+    const result = await fetch(`${process.env.DOC_API_URL}/uploads/view/${currentDraggedItem.src}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -82,8 +82,8 @@ export const DocumentsRoute: FC = () => {
         return response.blob();
       })
       .then(myBlob => {
-        handleArweaveUpload(myBlob);
-        setCurrentFile(null);
+        handleArweaveUpload(myBlob, currentDraggedItem.src);
+        setCurrentDraggedItem(null);
       })
       .catch(error => {
         console.error(
@@ -93,7 +93,7 @@ export const DocumentsRoute: FC = () => {
       });
   };
 
-  const handleArweaveUpload = async file => {
+  const handleArweaveUpload = async (file, fileType: string) => {
     let transaction;
     let response;
 
@@ -103,10 +103,13 @@ export const DocumentsRoute: FC = () => {
       return;
     }
 
+    const splitFileType = fileType.split('.')[1];
+
     const fileReader = new FileReader();
     fileReader.onload = async ev => {
       // @ts-ignore
       const filetoRead = new Uint8Array(ev.target.result);
+
       setIsLoading(false);
 
       try {
@@ -117,7 +120,12 @@ export const DocumentsRoute: FC = () => {
           arweaveKey
         );
 
-        transaction.addTag('Content-Type', file.type);
+        if (splitFileType === 'jpg' || splitFileType === 'gif' || splitFileType === 'jpeg' || splitFileType === 'png') {
+          transaction.addTag('Content-Type', `image/${splitFileType}`);
+        } else {
+          transaction.addTag('Content-Type', `application/${splitFileType}`);
+        }
+
       } catch {
         setErrorMessage('Failed to create transaction. Please try again.');
         setIsLoading(false);
@@ -159,15 +167,15 @@ export const DocumentsRoute: FC = () => {
   const handleFileDrop = useCallback(
     (item: any, monitor: DropTargetMonitor) => {
       if (monitor) {
-        if (currentFile) {
+        if (currentDraggedItem) {
           handleDrop(item);
         } else if (monitor.getItem().files) {
           const files = monitor.getItem().files[0];
-          handleArweaveUpload(files);
+          handleArweaveUpload(files, files.fileType);
         }
       }
     },
-    [arweaveKey, currentFile, setCurrentFile]
+    [arweaveKey, currentDraggedItem, setCurrentDraggedItem]
   );
 
   interface TargetBoxProps {
@@ -180,9 +188,9 @@ export const DocumentsRoute: FC = () => {
     const [{ isOver, canDrop }, drop] = useDrop({
       accept: ['tr', NativeTypes.FILE],
       drop: (item, monitor) => {
-        if (onDrop && !currentFile) {
+        if (onDrop && !currentDraggedItem) {
           onDrop(props, monitor);
-        } else if (onDrop && currentFile) {
+        } else if (onDrop && currentDraggedItem) {
           handleDrop(children);
         }
       },
@@ -327,26 +335,35 @@ export const DocumentsRoute: FC = () => {
       const json = await response.json();
 
 
+
+
       if (json) {
         typeof json.moved === 'string' && setResponse(json.moved);
-        Object.values(json.data).map((file: string) => {
+        Object.values(json.data).map(async (file: string) => {
+          let viewed;
 
-          const url = file ? file.split(`${process.env.DOC_API_URL}/uploads/view/`)[1] : ''
+          const url = file ? file.split(`${process.env.DOC_API_URL}/uploads/view/`)[1] : '';
+
 
           files.push({
             fileName: encodeURI(url),
             server: 'Internal Server',
-            hasThumbnail: determineIfThumbnail(file)
+            hasThumbnail: determineIfThumbnail(file),
+            viewed
           });
         });
       }
 
       const userType = getUserType();
       if (userType === 'blockstack') {
-        const gaiaFiles = await getGaiaServerDocuments();
-        gaiaFiles.map(gaiaFile => {
-          files.push(gaiaFile);
-        });
+        try {
+          let gaiaFiles = await getGaiaServerDocuments();
+          gaiaFiles.map(gaiaFile => {
+            files.push(gaiaFile);
+          });
+        } catch (err) {
+          console.log('error');
+        }
       }
 
       const isNull = value => typeof value === 'object' && !value;
@@ -404,7 +421,7 @@ export const DocumentsRoute: FC = () => {
   const getGaiaServerDocuments = async () => {
     try {
       const files = [];
-      await listFiles(file => {
+      await userSession.listFiles(file => {
         files.push(file);
         return true;
       });
@@ -412,7 +429,7 @@ export const DocumentsRoute: FC = () => {
         files.map(async file => {
           return {
             fileName: file,
-            fileUrl: await getFileUrl(file),
+            fileUrl: await userSession.getFileUrl(file),
             server: 'GAIA Server',
             hasThumbnail: determineIfThumbnail(file)
           };
@@ -426,7 +443,7 @@ export const DocumentsRoute: FC = () => {
   const deleteGaiaServerDocument = async (name: string) => {
     setModalError('');
     try {
-      await deleteFile(name);
+      await userSession.deleteFile(name);
       setIsLoading(false);
       await getDocuments();
       setShowModal(false);
@@ -609,7 +626,8 @@ export const DocumentsRoute: FC = () => {
           */
           // @ts-ignore
           item.index = hoverIndex;
-          setCurrentFile(item);
+
+          setCurrentDraggedItem(item);
         }
       });
 
@@ -699,18 +717,55 @@ export const DocumentsRoute: FC = () => {
                   {file.fileName}
                 </a>
               )}
-              {file.server !== 'Arweave' && (
+              <div className={styles.buttonContainer}>
+                {file.viewed && <IconButton
+                  className={styles.actionBtn}
+                  image="icons/eye.svg"
+                  title="Document has been viewed"
+                />}
+
                 <ModalLink
-                  content={getModalContent(file.fileName, file.server)}
-                >
-                  <IconButton
+                  content={ShareModalContent(file)}
+                ><IconButton
                     className={styles.actionBtn}
                     disabled={isDeleting}
-                    image="icons/delete-primary.svg"
-                    title="Delete Service"
-                  />
-                </ModalLink>
-              )}
+                    image="icons/share.svg"
+                    title="Share"
+                  /></ModalLink>
+                {file.server !== 'Arweave' && (
+                  <ModalLink
+                    content={getModalContent(file.fileName, file.server)}
+                  >
+                    <IconButton
+                      className={styles.actionBtn}
+                      disabled={isDeleting}
+                      image="icons/delete-primary.svg"
+                      title="Delete Service"
+                    />
+                  </ModalLink>
+                )}
+              </div>
+
+              {/* {file.server === 'GAIA Server' && (
+                <a
+                  className={styles.documentLink}
+                  target="_blank"
+                  href={file.fileUrl}
+                >
+                  {file.hasThumbnail ? (
+                    <div
+                      className={styles.thumbnail}
+                      style={{ backgroundImage: `url(${file.fileUrl}` }}
+                    />
+                  ) : (
+                      <img
+                        className={styles.documentIcon}
+                        src={`${process.env.PUBLIC_URL}icons/document.svg`}
+                      />
+                    )}
+                  {file.fileName}
+                </a>
+              )} */}
               {/* {file.server === 'GAIA Server' && (
                 <a
                   className={styles.documentLink}
@@ -732,8 +787,8 @@ export const DocumentsRoute: FC = () => {
                     )}
                   {file.fileName}
                 </a>
-              )}
-              {file.server === 'IPFS' && (
+              )} */}
+              {/* {file.server === 'IPFS' && (
                 <a
                   className={styles.documentLink}
                   target="_blank"

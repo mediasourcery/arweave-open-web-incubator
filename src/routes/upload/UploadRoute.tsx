@@ -1,4 +1,4 @@
-import { putFile } from 'blockstack';
+import { AppConfig, UserSession } from 'blockstack';
 import * as IPFS from 'ipfs';
 import * as React from 'react';
 import { FC, FormEvent, useContext, useEffect, useState } from 'react';
@@ -8,9 +8,8 @@ import {
   BreadcrumbsContext,
   PageContext
 } from '../../contexts';
-import { decodeToken, redirectToLogin, getUserType } from '../../utils';
+import { decodeToken, getUserType, redirectToLogin } from '../../utils';
 import styles from './UploadRoute.scss';
-
 
 export const UploadRoute: FC = () => {
   const token = decodeToken(sessionStorage.getItem('token'));
@@ -33,12 +32,14 @@ export const UploadRoute: FC = () => {
   const [inputUrl, setInputUrl] = useState('');
   const [ipfsNode, setIpfsNode] = useState<any>();
 
+  const appConfig = new AppConfig(['store_write']);
+  const userSession = new UserSession({ appConfig: appConfig });
 
   const handleGaiaUpload = async (fileName, file) => {
     setErrorMessage('');
     setSuccessMessage('');
     try {
-      await putFile(fileName, file, {
+      await userSession.putFile(fileName, file, {
         encrypt: false
       });
       setSuccessMessage('Document uploaded successfully!');

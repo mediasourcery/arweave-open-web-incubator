@@ -1,3 +1,4 @@
+export const buttonContainer: string;
 export const actionBtn: string;
 export const form: string;
 export const button: string;
