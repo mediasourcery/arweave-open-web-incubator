@@ -42,7 +42,7 @@ export const Header: React.FunctionComponent = () => {
           to="/"
         >
           <Icon image="icons/auth-icon.svg" size={32} />
-          <span className={styles.text}>Doc Uploader v1.0</span>
+          <span className={styles.text}>Doc Uploader v1.1</span>
         </Link>
       </h1>
       <div className={styles.spacer} />
