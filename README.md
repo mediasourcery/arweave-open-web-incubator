@@ -1,8 +1,10 @@
-# Cross blockchain demo document uploader
+# Cross blockchain document uploader with authorization, sharing, incentivized notification and drag-and-drop
 
 Real usage for applications should span enterprises and multiple blockchains. Expecting or forcing users to utilize one blockchain solution (or even one Enterprise solution) is great for experiments or proof-of-concepts. But it does not reflect the real world. Media Sourcery's products work across systems, attempting to hide the complexities from users who just want to gets tasks done.
 
-This solution is a document uploader integrated with Media Sourcery's Auth Service product that supports Blockstack Connect and uPort authentication, and their respective decentralized storage options plus arweave's permaweb storage. It will support future integrations to the Media Sourcery Workflow As A Service products.
+This solution is a document uploader integrated with Media Sourcery's Auth Service product that supports Blockstack Connect and uPort authentication, and their respective decentralized storage options plus arweave's permaweb storage. The solution provides sharing, notifications that documents have been shared and indications that the documents have been viewed.
+
+It will support future integrations to the Media Sourcery Workflow As A Service products.
 
 ## Features
 
